@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grip Strength Tournament</title>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; min-height: 100vh; }
+:root {
+  --bg: #0a0c10; --card: #12151c; --card-border: #1e2230;
+  --accent: #f97316; --accent-dim: #c2410c; --accent-glow: rgba(249,115,22,0.15);
+  --green: #22c55e; --green-glow: rgba(34,197,94,0.1);
+  --red: #ef4444; --red-dim: #991b1b;
+  --text: #e2e4e9; --text-muted: #8b8fa3; --text-dim: #555969;
+  --divider: #1a1e2a; --input-bg: #0e1017; --input-border: #252938;
+  --mono: 'JetBrains Mono', monospace; --font: 'Anybody', sans-serif;
+}
+
+.header { padding: 24px 24px 0; border-bottom: 1px solid var(--divider); }
+.header-top { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.header-sub { font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 2px; margin-bottom: 4px; }
+.header h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1; }
+.header h1 span { color: var(--accent); }
+.header-info { font-size: 12px; color: var(--text-muted); font-family: var(--mono); margin-top: 4px; }
+.champ-badge { background: var(--accent-glow); border: 1px solid var(--accent); border-radius: 8px; padding: 8px 16px; text-align: center; }
+.champ-badge .label { font-size: 9px; font-family: var(--mono); color: var(--accent); letter-spacing: 1.5px; }
+.champ-badge .name { font-size: 20px; font-weight: 900; color: var(--accent); }
+
+.tabs { display: flex; gap: 0; }
+.tab { padding: 8px 20px; font-size: 11px; font-family: var(--mono); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; color: var(--text-dim); border-bottom: 2px solid transparent; transition: all 0.2s; user-select: none; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.content { padding: 20px; overflow-x: auto; }
+.section-label { font-size: 11px; font-family: var(--mono); font-weight: 700; letter-spacing: 1.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.section-label .dot { width: 8px; height: 8px; border-radius: 50%; }
+.section-label.winners { color: var(--green); }
+.section-label.winners .dot { background: var(--green); }
+.section-label.losers { color: var(--red); }
+.section-label.losers .dot { background: var(--red); }
+.section-label.grand { color: var(--accent); }
+.section-label.grand .dot { background: var(--accent); }
+
+.bracket-section { margin-bottom: 28px; }
+.bracket-grid { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; }
+.round { min-width: 175px; max-width: 195px; flex: 0 0 185px; }
+.round-label { font-size: 10px; font-weight: 700; color: var(--text-dim); letter-spacing: 1.5px; margin-bottom: 10px; font-family: var(--mono); text-transform: uppercase; }
+.matches { display: flex; flex-direction: column; gap: 10px; }
+
+.match { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; transition: opacity 0.3s; }
+.match.grand-final { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+.match.dimmed { opacity: 0.3; }
+.match-header { background: var(--accent); color: var(--bg); font-size: 10px; font-weight: 700; text-align: center; padding: 3px 0; letter-spacing: 1.5px; font-family: var(--mono); text-transform: uppercase; }
+
+.slot { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; font-size: 13px; font-family: var(--font); border-left: 3px solid transparent; transition: all 0.2s; }
+.slot + .slot { border-top: 1px solid var(--divider); }
+.slot.winner { background: var(--accent-glow); border-left-color: var(--accent); }
+.slot .name { color: var(--text); }
+.slot .name.tbd { color: var(--text-dim); font-style: italic; }
+.slot .score { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+
+.enter-btn { padding: 6px 12px; text-align: center; font-size: 11px; font-family: var(--mono); color: var(--accent); cursor: pointer; border-top: 1px solid var(--divider); background: var(--accent-glow); letter-spacing: 0.5px; user-select: none; }
+.enter-btn:hover { filter: brightness(1.1); }
+
+.win-banner { padding: 4px 12px; text-align: center; font-size: 10px; font-family: var(--mono); color: var(--green); border-top: 1px solid var(--divider); background: var(--green-glow); letter-spacing: 0.5px; }
+
+.entry-form { padding: 10px; border-top: 1px solid var(--divider); background: var(--input-bg); }
+.entry-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.entry-col { flex: 1; }
+.entry-col label { font-size: 10px; color: var(--text-muted); margin-bottom: 3px; font-family: var(--mono); display: block; }
+.entry-col input { width: 100%; padding: 6px 8px; background: var(--card); border: 1px solid var(--input-border); border-radius: 4px; color: var(--text); font-size: 14px; font-family: var(--mono); outline: none; }
+.entry-col input:focus { border-color: var(--accent); }
+.entry-col .bonus { font-size: 9px; color: var(--text-dim); margin-top: 2px; font-family: var(--mono); }
+.preview { font-size: 10px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 8px; padding: 4px 6px; background: var(--card); border-radius: 4px; }
+.entry-actions { display: flex; gap: 6px; }
+.btn-record { flex: 1; padding: 6px 0; text-align: center; font-size: 11px; font-family: var(--mono); color: var(--bg); background: var(--accent); border-radius: 4px; cursor: pointer; font-weight: 700; letter-spacing: 0.5px; border: none; }
+.btn-cancel { padding: 6px 12px; text-align: center; font-size: 11px; font-family: var(--mono); color: var(--text-muted); background: var(--card); border-radius: 4px; cursor: pointer; border: 1px solid var(--input-border); }
+
+.btn-reset { display: inline-block; padding: 6px 16px; font-size: 10px; font-family: var(--mono); color: var(--red-dim); border: 1px solid var(--red-dim); border-radius: 4px; cursor: pointer; letter-spacing: 1px; margin-top: 8px; background: transparent; }
+
+.standings-table { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; }
+.standings-header { display: grid; grid-template-columns: 40px 1fr 80px 80px 60px; padding: 10px 14px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 1px; border-bottom: 1px solid var(--divider); text-transform: uppercase; }
+.standings-row { display: grid; grid-template-columns: 40px 1fr 80px 80px 60px; padding: 10px 14px; font-size: 13px; align-items: center; }
+.standings-row + .standings-row { border-top: 1px solid var(--divider); }
+.standings-row.eliminated { opacity: 0.5; }
+.standings-row.champ { background: var(--accent-glow); }
+
+.formula-box { margin-top: 20px; padding: 16px; background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; }
+.formula-title { font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 1px; margin-bottom: 10px; }
+.formula-text { font-size: 12px; color: var(--text-muted); font-family: var(--mono); line-height: 1.8; }
+
+.log-empty { text-align: center; padding: 40px; color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
+.log-entry { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+.log-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 1px; }
+.log-matchup { display: flex; justify-content: space-between; align-items: center; }
+.log-player { flex: 1; font-size: 14px; }
+.log-player.winner { font-weight: 700; color: var(--accent); }
+.log-player.loser { font-weight: 400; color: var(--text-muted); }
+.log-scores { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+.log-vs { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const PLAYERS = [
+  { name: "Phil", baseline: 169 },
+  { name: "Billy", baseline: 167 },
+  { name: "Justin", baseline: 150.6 },
+  { name: "Chad E", baseline: 141.8 },
+  { name: "Billy C", baseline: 127.4 },
+  { name: "Jack", baseline: 124 },
+  { name: "Jared", baseline: 124 },
+  { name: "Baldy", baseline: 123.2 },
+  { name: "Josh", baseline: 119 },
+  { name: "Bryan", baseline: 118 },
+  { name: "Ryan", baseline: 117 },
+  { name: "Chad G", baseline: 115 },
+  { name: "Jake", baseline: 114 },
+  { name: "Eric", baseline: 110 },
+];
+
+const TOP_BASELINE = 169;
+const HANDICAP_MULT = 0.15;
+
+function getHandicap(b) { return Math.round((TOP_BASELINE - b) * HANDICAP_MULT * 100) / 100; }
+function getAdjusted(squeeze, baseline) {
+  return Math.round(((squeeze / baseline) * 100 + getHandicap(baseline)) * 100) / 100;
+}
+
+function generateBracket(s) {
+  return {
+    winners: {
+      r1: [
+        { id:"WR1-1", p1:s[2].name, p2:s[13].name, winner:null, p1Score:null, p2Score:null },
+        { id:"WR1-2", p1:s[3].name, p2:s[12].name, winner:null, p1Score:null, p2Score:null },
+        { id:"WR1-3", p1:s[4].name, p2:s[11].name, winner:null, p1Score:null, p2Score:null },
+        { id:"WR1-4", p1:s[5].name, p2:s[10].name, winner:null, p1Score:null, p2Score:null },
+        { id:"WR1-5", p1:s[6].name, p2:s[9].name, winner:null, p1Score:null, p2Score:null },
+        { id:"WR1-6", p1:s[7].name, p2:s[8].name, winner:null, p1Score:null, p2Score:null },
+      ],
+      qf: [
+        { id:"WQF-1", p1:s[0].name, p2:null, feedP2:"WR1-1", winner:null, p1Score:null, p2Score:null },
+        { id:"WQF-2", p1:s[1].name, p2:null, feedP2:"WR1-2", winner:null, p1Score:null, p2Score:null },
+        { id:"WQF-3", p1:null, p2:null, feedP1:"WR1-3", feedP2:"WR1-4", winner:null, p1Score:null, p2Score:null },
+        { id:"WQF-4", p1:null, p2:null, feedP1:"WR1-5", feedP2:"WR1-6", winner:null, p1Score:null, p2Score:null },
+      ],
+      sf: [
+        { id:"WSF-1", p1:null, p2:null, feedP1:"WQF-1", feedP2:"WQF-2", winner:null, p1Score:null, p2Score:null },
+        { id:"WSF-2", p1:null, p2:null, feedP1:"WQF-3", feedP2:"WQF-4", winner:null, p1Score:null, p2Score:null },
+      ],
+      final: [
+        { id:"WF", p1:null, p2:null, feedP1:"WSF-1", feedP2:"WSF-2", winner:null, p1Score:null, p2Score:null },
+      ],
+    },
+    losers: {
+      lr1: [
+        { id:"LR1-1", p1:null, p2:null, feedP1L:"WR1-1", feedP2L:"WR1-2", winner:null, p1Score:null, p2Score:null },
+        { id:"LR1-2", p1:null, p2:null, feedP1L:"WR1-3", feedP2L:"WR1-4", winner:null, p1Score:null, p2Score:null },
+        { id:"LR1-3", p1:null, p2:null, feedP1L:"WR1-5", feedP2L:"WR1-6", winner:null, p1Score:null, p2Score:null },
+      ],
+      lr2: [
+        { id:"LR2-1", p1:null, p2:null, feedP1:"LR1-1", feedP2L:"WQF-4", winner:null, p1Score:null, p2Score:null },
+        { id:"LR2-2", p1:null, p2:null, feedP1:"LR1-2", feedP2L:"WQF-3", winner:null, p1Score:null, p2Score:null },
+        { id:"LR2-3", p1:null, p2:null, feedP1:"LR1-3", feedP2L:"WQF-2", winner:null, p1Score:null, p2Score:null },
+      ],
+      lr3: [
+        { id:"LR3-1", p1:null, p2:null, feedP1L:"WQF-1", feedP2:"LR2-3", winner:null, p1Score:null, p2Score:null },
+        { id:"LR3-2", p1:null, p2:null, feedP1:"LR2-1", feedP2:"LR2-2", winner:null, p1Score:null, p2Score:null },
+      ],
+      lr4: [
+        { id:"LR4", p1:null, p2:null, feedP1:"LR3-1", feedP2:"LR3-2", winner:null, p1Score:null, p2Score:null },
+      ],
+      lr5: [
+        { id:"LR5", p1:null, p2:null, feedP1:"LR4", feedP2L:"WSF-2", winner:null, p1Score:null, p2Score:null },
+      ],
+      lr6: [
+        { id:"LR6", p1:null, p2:null, feedP1:"LR5", feedP2L:"WSF-1", winner:null, p1Score:null, p2Score:null },
+      ],
+      final: [
+        { id:"LF", p1:null, p2:null, feedP1:"LR6", feedP2L:"WF", winner:null, p1Score:null, p2Score:null },
+      ],
+    },
+    grand: {
+      final: [
+        { id:"GF", p1:null, p2:null, feedP1W:"WF", feedP2:"LF", winner:null, p1Score:null, p2Score:null },
+      ],
+      reset: [
+        { id:"GF-R", p1:null, p2:null, winner:null, p1Score:null, p2Score:null, conditional:true },
+      ],
+    },
+  };
+}
+
+function findMatch(bracket, id) {
+  for (const section of Object.values(bracket)) {
+    for (const round of Object.values(section)) {
+      if (Array.isArray(round)) {
+        const m = round.find(m => m.id === id);
+        if (m) return m;
+      }
+    }
+  }
+  return null;
+}
+
+function getLoser(m) {
+  if (!m || !m.winner) return null;
+  return m.winner === m.p1 ? m.p2 : m.p1;
+}
+
+function propagate(bracket) {
+  const b = JSON.parse(JSON.stringify(bracket));
+  const find = id => findMatch(b, id);
+  const all = [];
+  for (const sec of Object.values(b))
+    for (const rnd of Object.values(sec))
+      if (Array.isArray(rnd)) all.push(...rnd);
+
+  for (const m of all) {
+    if (m.feedP1) { const src = find(m.feedP1); if (src?.winner) m.p1 = src.winner; }
+    if (m.feedP2) { const src = find(m.feedP2); if (src?.winner) m.p2 = src.winner; }
+    if (m.feedP1W) { const src = find(m.feedP1W); if (src?.winner) m.p1 = src.winner; }
+    if (m.feedP1L) { const src = find(m.feedP1L); const l = getLoser(src); if (l) m.p1 = l; }
+    if (m.feedP2L) { const src = find(m.feedP2L); const l = getLoser(src); if (l) m.p2 = l; }
+  }
+  const gf = find("GF"), gfr = find("GF-R");
+  if (gf?.winner && gf.winner === gf.p2) { gfr.p1 = gf.p1; gfr.p2 = gf.p2; }
+  return b;
+}
+
+// State
+let state = { bracket: null, matchLog: [], tab: "bracket", openEntry: null };
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem("grip-tournament-v3");
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data.bracket) state.bracket = data.bracket;
+      if (data.matchLog) state.matchLog = data.matchLog;
+    }
+  } catch(e) {}
+  if (!state.bracket) {
+    state.bracket = propagate(generateBracket(PLAYERS));
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem("grip-tournament-v3", JSON.stringify({ bracket: state.bracket, matchLog: state.matchLog }));
+  } catch(e) {}
+}
+
+function getChampion() {
+  const gf = findMatch(state.bracket, "GF");
+  const gfr = findMatch(state.bracket, "GF-R");
+  if (gf?.winner === gf?.p1) return gf.p1;
+  if (gfr?.winner) return gfr.winner;
+  return null;
+}
+
+function recordMatch(matchId, winner, s1, s2) {
+  const m = findMatch(state.bracket, matchId);
+  if (m) { m.winner = winner; m.p1Score = s1; m.p2Score = s2; }
+  state.bracket = propagate(state.bracket);
+  state.matchLog.push({ matchId, winner, p1: m.p1, p2: m.p2, p1Score: s1, p2Score: s2, timestamp: new Date().toISOString() });
+  state.openEntry = null;
+  saveState();
+  render();
+}
+
+function resetTournament() {
+  if (!confirm("Reset the entire tournament? This cannot be undone.")) return;
+  state.bracket = propagate(generateBracket(PLAYERS));
+  state.matchLog = [];
+  state.openEntry = null;
+  saveState();
+  render();
+}
+
+function renderMatch(m, isGrand, isReset) {
+  const p1Data = PLAYERS.find(p => p.name === m.p1);
+  const p2Data = PLAYERS.find(p => p.name === m.p2);
+  const ready = m.p1 && m.p2 && !m.winner;
+  const isOpen = state.openEntry === m.id;
+  const dimmed = isReset && !m.p1;
+
+  let html = `<div class="match${isGrand ? ' grand-final' : ''}${dimmed ? ' dimmed' : ''}">`;
+  if (isGrand) html += `<div class="match-header">${isReset ? 'Reset match' : 'Grand final'}</div>`;
+
+  // Slot 1
+  html += `<div class="slot${m.winner === m.p1 ? ' winner' : ''}">`;
+  html += `<span class="name${!m.p1 ? ' tbd' : ''}">${m.p1 || 'TBD'}</span>`;
+  if (m.p1Score != null) html += `<span class="score">${m.p1Score} lbs</span>`;
+  html += `</div>`;
+
+  // Slot 2
+  html += `<div class="slot${m.winner === m.p2 ? ' winner' : ''}">`;
+  html += `<span class="name${!m.p2 ? ' tbd' : ''}">${m.p2 || 'TBD'}</span>`;
+  if (m.p2Score != null) html += `<span class="score">${m.p2Score} lbs</span>`;
+  html += `</div>`;
+
+  if (ready && !isOpen) {
+    html += `<div class="enter-btn" onclick="state.openEntry='${m.id}';render()">ENTER SCORES</div>`;
+  }
+
+  if (isOpen && ready) {
+    html += `<div class="entry-form">`;
+    html += `<div class="entry-row">`;
+    html += `<div class="entry-col"><label>${m.p1}</label><input type="number" step="0.1" id="s1-${m.id}" placeholder="lbs">`;
+    if (p1Data) html += `<div class="bonus">+${getHandicap(p1Data.baseline)} bonus</div>`;
+    html += `</div>`;
+    html += `<div class="entry-col"><label>${m.p2}</label><input type="number" step="0.1" id="s2-${m.id}" placeholder="lbs">`;
+    if (p2Data) html += `<div class="bonus">+${getHandicap(p2Data.baseline)} bonus</div>`;
+    html += `</div></div>`;
+    html += `<div id="preview-${m.id}" class="preview" style="display:none"></div>`;
+    html += `<div class="entry-actions">`;
+    html += `<button class="btn-record" onclick="submitMatch('${m.id}')">RECORD</button>`;
+    html += `<button class="btn-cancel" onclick="state.openEntry=null;render()">CANCEL</button>`;
+    html += `</div></div>`;
+  }
+
+  if (m.winner) {
+    html += `<div class="win-banner">${m.winner} WINS</div>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+function submitMatch(matchId) {
+  const s1El = document.getElementById(`s1-${matchId}`);
+  const s2El = document.getElementById(`s2-${matchId}`);
+  if (!s1El || !s2El) return;
+  const v1 = parseFloat(s1El.value);
+  const v2 = parseFloat(s2El.value);
+  if (isNaN(v1) || isNaN(v2)) return;
+
+  const m = findMatch(state.bracket, matchId);
+  const p1Data = PLAYERS.find(p => p.name === m.p1);
+  const p2Data = PLAYERS.find(p => p.name === m.p2);
+  if (!p1Data || !p2Data) return;
+
+  const adj1 = getAdjusted(v1, p1Data.baseline);
+  const adj2 = getAdjusted(v2, p2Data.baseline);
+  const winner = adj1 >= adj2 ? m.p1 : m.p2;
+  recordMatch(matchId, winner, v1, v2);
+}
+
+function setupPreviewListeners() {
+  if (!state.openEntry) return;
+  const mid = state.openEntry;
+  const s1El = document.getElementById(`s1-${mid}`);
+  const s2El = document.getElementById(`s2-${mid}`);
+  const prevEl = document.getElementById(`preview-${mid}`);
+  if (!s1El || !s2El || !prevEl) return;
+
+  const m = findMatch(state.bracket, mid);
+  const p1Data = PLAYERS.find(p => p.name === m.p1);
+  const p2Data = PLAYERS.find(p => p.name === m.p2);
+
+  function update() {
+    const v1 = parseFloat(s1El.value);
+    const v2 = parseFloat(s2El.value);
+    if (!isNaN(v1) && !isNaN(v2) && p1Data && p2Data) {
+      const a1 = getAdjusted(v1, p1Data.baseline);
+      const a2 = getAdjusted(v2, p2Data.baseline);
+      prevEl.textContent = `Adjusted: ${m.p1} ${a1} vs ${m.p2} ${a2}`;
+      prevEl.style.display = 'block';
+    } else {
+      prevEl.style.display = 'none';
+    }
+  }
+  s1El.addEventListener('input', update);
+  s2El.addEventListener('input', update);
+}
+
+function renderRound(label, matches, isGrand) {
+  let html = `<div class="round"><div class="round-label">${label}</div><div class="matches">`;
+  for (const m of matches) {
+    html += renderMatch(m, isGrand, m.conditional);
+  }
+  html += `</div></div>`;
+  return html;
+}
+
+function renderBracket() {
+  const b = state.bracket;
+  let html = '';
+
+  // Winners
+  html += `<div class="bracket-section">`;
+  html += `<div class="section-label winners"><div class="dot"></div>WINNERS BRACKET</div>`;
+  html += `<div class="bracket-grid">`;
+  html += renderRound("Round 1", b.winners.r1);
+  html += renderRound("Quarterfinals", b.winners.qf);
+  html += renderRound("Semifinals", b.winners.sf);
+  html += renderRound("Winners final", b.winners.final);
+  html += `</div></div>`;
+
+  // Losers
+  html += `<div class="bracket-section">`;
+  html += `<div class="section-label losers"><div class="dot"></div>LOSERS BRACKET</div>`;
+  html += `<div class="bracket-grid">`;
+  html += renderRound("LR1", b.losers.lr1);
+  html += renderRound("LR2", b.losers.lr2);
+  html += renderRound("LR3", b.losers.lr3);
+  html += renderRound("LR4", b.losers.lr4);
+  html += renderRound("LR5", b.losers.lr5);
+  html += renderRound("LR6", b.losers.lr6);
+  html += renderRound("Losers final", b.losers.final);
+  html += `</div></div>`;
+
+  // Grand Final
+  html += `<div class="bracket-section">`;
+  html += `<div class="section-label grand"><div class="dot"></div>GRAND FINAL</div>`;
+  html += `<div class="bracket-grid">`;
+  html += renderRound("Final", b.grand.final, true);
+  html += renderRound("Reset (if needed)", b.grand.reset, true);
+  html += `</div></div>`;
+
+  html += `<button class="btn-reset" onclick="resetTournament()">RESET TOURNAMENT</button>`;
+  return html;
+}
+
+function renderStandings() {
+  const champ = getChampion();
+  let html = `<div class="standings-table">`;
+  html += `<div class="standings-header"><span>Seed</span><span>Name</span><span>Baseline</span><span>Bonus</span><span>Status</span></div>`;
+  PLAYERS.forEach((p, i) => {
+    const losses = state.matchLog.filter(l => (l.p1 === p.name || l.p2 === p.name) && l.winner !== p.name).length;
+    const elim = losses >= 2;
+    const isChamp = champ === p.name;
+    html += `<div class="standings-row${elim ? ' eliminated' : ''}${isChamp ? ' champ' : ''}">`;
+    html += `<span style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">${i+1}</span>`;
+    html += `<span style="font-weight:500;color:${isChamp ? 'var(--accent)' : 'var(--text)'}">${p.name}</span>`;
+    html += `<span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${p.baseline} lbs</span>`;
+    html += `<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">+${getHandicap(p.baseline)}</span>`;
+    html += `<span style="font-size:10px;font-family:var(--mono);color:${isChamp ? 'var(--accent)' : elim ? 'var(--red)' : 'var(--green)'}">${isChamp ? 'CHAMP' : elim ? 'OUT' : 'IN'}</span>`;
+    html += `</div>`;
+  });
+  html += `</div>`;
+
+  html += `<div class="formula-box">`;
+  html += `<div class="formula-title">HANDICAP FORMULA</div>`;
+  html += `<div class="formula-text">`;
+  html += `Adjusted = (squeeze &divide; baseline) &times; 100 + bonus<br>`;
+  html += `Bonus = (169 &minus; baseline) &times; 0.15<br>`;
+  html += `Higher adjusted score wins the match<br><br>`;
+  html += `Example: Eric squeezes 115 lbs (baseline 110)<br>`;
+  html += `&rarr; (115 &divide; 110) &times; 100 + 8.85 = 113.40<br>`;
+  html += `Phil squeezes 172 lbs (baseline 169)<br>`;
+  html += `&rarr; (172 &divide; 169) &times; 100 + 0 = 101.78<br>`;
+  html += `Eric wins despite lower raw score`;
+  html += `</div></div>`;
+  return html;
+}
+
+function renderLog() {
+  if (state.matchLog.length === 0) {
+    return `<div class="log-empty">No matches played yet. Head to the bracket and enter some scores.</div>`;
+  }
+  let html = '';
+  const logs = [...state.matchLog].reverse();
+  for (const log of logs) {
+    const p1Data = PLAYERS.find(p => p.name === log.p1);
+    const p2Data = PLAYERS.find(p => p.name === log.p2);
+    const adj1 = p1Data ? getAdjusted(log.p1Score, p1Data.baseline) : 0;
+    const adj2 = p2Data ? getAdjusted(log.p2Score, p2Data.baseline) : 0;
+    const d = new Date(log.timestamp);
+    html += `<div class="log-entry">`;
+    html += `<div class="log-meta"><span>${log.matchId}</span><span>${d.toLocaleDateString()} ${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span></div>`;
+    html += `<div class="log-matchup">`;
+    html += `<div style="flex:1"><span class="log-player ${log.winner===log.p1?'winner':'loser'}">${log.p1}</span> <span class="log-scores">${log.p1Score} lbs &rarr; ${adj1}</span></div>`;
+    html += `<span class="log-vs">vs</span>`;
+    html += `<div style="flex:1;text-align:right"><span class="log-scores">${adj2} &larr; ${log.p2Score} lbs</span> <span class="log-player ${log.winner===log.p2?'winner':'loser'}">${log.p2}</span></div>`;
+    html += `</div></div>`;
+  }
+  return html;
+}
+
+function render() {
+  const champ = getChampion();
+  let html = `<div class="header"><div class="header-top"><div>`;
+  html += `<div class="header-sub">HANDEFUL DYNAMOMETER</div>`;
+  html += `<h1>GRIP <span>STRENGTH</span> TOURNAMENT</h1>`;
+  html += `<div class="header-info">14 players &middot; Double elimination &middot; Handicap adjusted</div>`;
+  html += `</div>`;
+  if (champ) {
+    html += `<div class="champ-badge"><div class="label">CHAMPION</div><div class="name">${champ}</div></div>`;
+  }
+  html += `</div>`;
+  html += `<div class="tabs">`;
+  ["bracket","standings","log"].forEach(t => {
+    html += `<div class="tab${state.tab===t?' active':''}" onclick="state.tab='${t}';render()">${t}</div>`;
+  });
+  html += `</div></div>`;
+  html += `<div class="content">`;
+  if (state.tab === "bracket") html += renderBracket();
+  else if (state.tab === "standings") html += renderStandings();
+  else html += renderLog();
+  html += `</div>`;
+
+  document.getElementById('app').innerHTML = html;
+  setTimeout(setupPreviewListeners, 0);
+}
+
+loadState();
+render();
+</script>
+</body>
+</html>
