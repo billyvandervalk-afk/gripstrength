@@ -13,6 +13,8 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
   --accent: #f97316; --accent-dim: #c2410c; --accent-glow: rgba(249,115,22,0.15);
   --green: #22c55e; --green-glow: rgba(34,197,94,0.1);
   --red: #ef4444; --red-dim: #991b1b;
+  --blue: #3b82f6; --blue-glow: rgba(59,130,246,0.12);
+  --yellow: #eab308; --yellow-glow: rgba(234,179,8,0.12);
   --text: #e2e4e9; --text-muted: #8b8fa3; --text-dim: #555969;
   --divider: #1a1e2a; --input-bg: #0e1017; --input-border: #252938;
   --mono: 'JetBrains Mono', monospace; --font: 'Anybody', sans-serif;
@@ -28,8 +30,8 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
 .champ-badge .label { font-size: 9px; font-family: var(--mono); color: var(--accent); letter-spacing: 1.5px; }
 .champ-badge .name { font-size: 20px; font-weight: 900; color: var(--accent); }
 
-.tabs { display: flex; gap: 0; }
-.tab { padding: 8px 20px; font-size: 11px; font-family: var(--mono); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; color: var(--text-dim); border-bottom: 2px solid transparent; transition: all 0.2s; user-select: none; }
+.tabs { display: flex; gap: 0; flex-wrap: wrap; }
+.tab { padding: 8px 16px; font-size: 11px; font-family: var(--mono); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; color: var(--text-dim); border-bottom: 2px solid transparent; transition: all 0.2s; user-select: none; }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
 .content { padding: 20px; overflow-x: auto; }
@@ -44,7 +46,7 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
 
 .bracket-section { margin-bottom: 28px; }
 .bracket-grid { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; }
-.round { min-width: 175px; max-width: 195px; flex: 0 0 185px; }
+.round { min-width: 185px; max-width: 210px; flex: 0 0 195px; }
 .round-label { font-size: 10px; font-weight: 700; color: var(--text-dim); letter-spacing: 1.5px; margin-bottom: 10px; font-family: var(--mono); text-transform: uppercase; }
 .matches { display: flex; flex-direction: column; gap: 10px; }
 
@@ -53,35 +55,31 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
 .match.dimmed { opacity: 0.3; }
 .match-header { background: var(--accent); color: var(--bg); font-size: 10px; font-weight: 700; text-align: center; padding: 3px 0; letter-spacing: 1.5px; font-family: var(--mono); text-transform: uppercase; }
 
-.slot { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; font-size: 13px; font-family: var(--font); border-left: 3px solid transparent; transition: all 0.2s; }
+.slot { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; font-size: 13px; font-family: var(--font); border-left: 3px solid transparent; transition: all 0.2s; gap: 6px; }
 .slot + .slot { border-top: 1px solid var(--divider); }
 .slot.winner { background: var(--accent-glow); border-left-color: var(--accent); }
-.slot .name { color: var(--text); }
+.slot.has-score { border-left-color: var(--green); background: var(--green-glow); }
+.slot.waiting { border-left-color: var(--yellow); background: var(--yellow-glow); }
+.slot .name { color: var(--text); flex: 1; }
 .slot .name.tbd { color: var(--text-dim); font-style: italic; }
-.slot .score { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+.slot .scores-display { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.slot .raw { font-family: var(--mono); font-size: 12px; color: var(--text); }
+.slot .adj { font-family: var(--mono); font-size: 10px; color: var(--accent); }
 
-.enter-btn { padding: 6px 12px; text-align: center; font-size: 11px; font-family: var(--mono); color: var(--accent); cursor: pointer; border-top: 1px solid var(--divider); background: var(--accent-glow); letter-spacing: 0.5px; user-select: none; }
-.enter-btn:hover { filter: brightness(1.1); }
+.slot-entry { display: flex; align-items: center; gap: 4px; }
+.slot-entry input { width: 70px; padding: 4px 6px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 4px; color: var(--text); font-size: 13px; font-family: var(--mono); outline: none; text-align: right; }
+.slot-entry input:focus { border-color: var(--accent); }
+.slot-entry button { padding: 4px 8px; font-size: 10px; font-family: var(--mono); color: var(--bg); background: var(--accent); border: none; border-radius: 4px; cursor: pointer; font-weight: 700; letter-spacing: 0.3px; white-space: nowrap; }
 
 .win-banner { padding: 4px 12px; text-align: center; font-size: 10px; font-family: var(--mono); color: var(--green); border-top: 1px solid var(--divider); background: var(--green-glow); letter-spacing: 0.5px; }
-
-.entry-form { padding: 10px; border-top: 1px solid var(--divider); background: var(--input-bg); }
-.entry-row { display: flex; gap: 8px; margin-bottom: 8px; }
-.entry-col { flex: 1; }
-.entry-col label { font-size: 10px; color: var(--text-muted); margin-bottom: 3px; font-family: var(--mono); display: block; }
-.entry-col input { width: 100%; padding: 6px 8px; background: var(--card); border: 1px solid var(--input-border); border-radius: 4px; color: var(--text); font-size: 14px; font-family: var(--mono); outline: none; }
-.entry-col input:focus { border-color: var(--accent); }
-.entry-col .bonus { font-size: 9px; color: var(--text-dim); margin-top: 2px; font-family: var(--mono); }
-.preview { font-size: 10px; color: var(--text-muted); font-family: var(--mono); margin-bottom: 8px; padding: 4px 6px; background: var(--card); border-radius: 4px; }
-.entry-actions { display: flex; gap: 6px; }
-.btn-record { flex: 1; padding: 6px 0; text-align: center; font-size: 11px; font-family: var(--mono); color: var(--bg); background: var(--accent); border-radius: 4px; cursor: pointer; font-weight: 700; letter-spacing: 0.5px; border: none; }
-.btn-cancel { padding: 6px 12px; text-align: center; font-size: 11px; font-family: var(--mono); color: var(--text-muted); background: var(--card); border-radius: 4px; cursor: pointer; border: 1px solid var(--input-border); }
+.waiting-banner { padding: 4px 12px; text-align: center; font-size: 10px; font-family: var(--mono); color: var(--yellow); border-top: 1px solid var(--divider); background: var(--yellow-glow); letter-spacing: 0.5px; }
 
 .btn-reset { display: inline-block; padding: 6px 16px; font-size: 10px; font-family: var(--mono); color: var(--red-dim); border: 1px solid var(--red-dim); border-radius: 4px; cursor: pointer; letter-spacing: 1px; margin-top: 8px; background: transparent; }
 
-.standings-table { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; }
-.standings-header { display: grid; grid-template-columns: 40px 1fr 80px 80px 60px; padding: 10px 14px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 1px; border-bottom: 1px solid var(--divider); text-transform: uppercase; }
-.standings-row { display: grid; grid-template-columns: 40px 1fr 80px 80px 60px; padding: 10px 14px; font-size: 13px; align-items: center; }
+/* Standings */
+.standings-table { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; overflow-x: auto; }
+.standings-header { display: grid; grid-template-columns: 36px 1fr 70px 70px 70px 70px 50px; padding: 10px 12px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 1px; border-bottom: 1px solid var(--divider); text-transform: uppercase; min-width: 500px; }
+.standings-row { display: grid; grid-template-columns: 36px 1fr 70px 70px 70px 70px 50px; padding: 10px 12px; font-size: 13px; align-items: center; min-width: 500px; }
 .standings-row + .standings-row { border-top: 1px solid var(--divider); }
 .standings-row.eliminated { opacity: 0.5; }
 .standings-row.champ { background: var(--accent-glow); }
@@ -93,18 +91,32 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
 .log-empty { text-align: center; padding: 40px; color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
 .log-entry { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
 .log-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 1px; }
-.log-matchup { display: flex; justify-content: space-between; align-items: center; }
-.log-player { flex: 1; font-size: 14px; }
+.log-matchup { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px; }
+.log-player { font-size: 14px; }
 .log-player.winner { font-weight: 700; color: var(--accent); }
 .log-player.loser { font-weight: 400; color: var(--text-muted); }
 .log-scores { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
 .log-vs { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin: 0 8px; }
+
+.log-solo { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+.log-solo .tag { display: inline-block; font-size: 9px; font-family: var(--mono); padding: 2px 6px; border-radius: 3px; letter-spacing: 0.5px; margin-right: 6px; }
+.tag-squeeze { color: var(--blue); background: var(--blue-glow); }
+.tag-match { color: var(--green); background: var(--green-glow); }
+
+/* Squeeze view tab */
+.player-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.player-card .rank { font-family: var(--mono); font-size: 11px; color: var(--text-dim); min-width: 24px; }
+.player-card .pname { font-weight: 500; font-size: 15px; }
+.player-card .stat { text-align: center; }
+.player-card .stat-label { font-size: 9px; font-family: var(--mono); color: var(--text-dim); }
+.player-card .stat-val { font-family: var(--mono); font-size: 13px; }
+.squeeze-history { margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap; width: 100%; }
+.squeeze-pip { font-size: 10px; font-family: var(--mono); color: var(--text-dim); background: var(--input-bg); padding: 2px 6px; border-radius: 3px; }
+.squeeze-pip.best { color: var(--accent); background: var(--accent-glow); }
 </style>
 </head>
 <body>
-
 <div id="app"></div>
-
 <script>
 const PLAYERS = [
   { name: "Phil", baseline: 169 },
@@ -122,14 +134,9 @@ const PLAYERS = [
   { name: "Jake", baseline: 114 },
   { name: "Eric", baseline: 110 },
 ];
-
-const TOP_BASELINE = 169;
-const HANDICAP_MULT = 0.15;
-
+const TOP_BASELINE = 169, HANDICAP_MULT = 0.15;
 function getHandicap(b) { return Math.round((TOP_BASELINE - b) * HANDICAP_MULT * 100) / 100; }
-function getAdjusted(squeeze, baseline) {
-  return Math.round(((squeeze / baseline) * 100 + getHandicap(baseline)) * 100) / 100;
-}
+function getAdjusted(sq, bl) { return Math.round(((sq / bl) * 100 + getHandicap(bl)) * 100) / 100; }
 
 function generateBracket(s) {
   return {
@@ -171,46 +178,25 @@ function generateBracket(s) {
         { id:"LR3-1", p1:null, p2:null, feedP1L:"WQF-1", feedP2:"LR2-3", winner:null, p1Score:null, p2Score:null },
         { id:"LR3-2", p1:null, p2:null, feedP1:"LR2-1", feedP2:"LR2-2", winner:null, p1Score:null, p2Score:null },
       ],
-      lr4: [
-        { id:"LR4", p1:null, p2:null, feedP1:"LR3-1", feedP2:"LR3-2", winner:null, p1Score:null, p2Score:null },
-      ],
-      lr5: [
-        { id:"LR5", p1:null, p2:null, feedP1:"LR4", feedP2L:"WSF-2", winner:null, p1Score:null, p2Score:null },
-      ],
-      lr6: [
-        { id:"LR6", p1:null, p2:null, feedP1:"LR5", feedP2L:"WSF-1", winner:null, p1Score:null, p2Score:null },
-      ],
-      final: [
-        { id:"LF", p1:null, p2:null, feedP1:"LR6", feedP2L:"WF", winner:null, p1Score:null, p2Score:null },
-      ],
+      lr4: [ { id:"LR4", p1:null, p2:null, feedP1:"LR3-1", feedP2:"LR3-2", winner:null, p1Score:null, p2Score:null } ],
+      lr5: [ { id:"LR5", p1:null, p2:null, feedP1:"LR4", feedP2L:"WSF-2", winner:null, p1Score:null, p2Score:null } ],
+      lr6: [ { id:"LR6", p1:null, p2:null, feedP1:"LR5", feedP2L:"WSF-1", winner:null, p1Score:null, p2Score:null } ],
+      final: [ { id:"LF", p1:null, p2:null, feedP1:"LR6", feedP2L:"WF", winner:null, p1Score:null, p2Score:null } ],
     },
     grand: {
-      final: [
-        { id:"GF", p1:null, p2:null, feedP1W:"WF", feedP2:"LF", winner:null, p1Score:null, p2Score:null },
-      ],
-      reset: [
-        { id:"GF-R", p1:null, p2:null, winner:null, p1Score:null, p2Score:null, conditional:true },
-      ],
+      final: [ { id:"GF", p1:null, p2:null, feedP1W:"WF", feedP2:"LF", winner:null, p1Score:null, p2Score:null } ],
+      reset: [ { id:"GF-R", p1:null, p2:null, winner:null, p1Score:null, p2Score:null, conditional:true } ],
     },
   };
 }
 
 function findMatch(bracket, id) {
-  for (const section of Object.values(bracket)) {
-    for (const round of Object.values(section)) {
-      if (Array.isArray(round)) {
-        const m = round.find(m => m.id === id);
-        if (m) return m;
-      }
-    }
-  }
+  for (const sec of Object.values(bracket))
+    for (const rnd of Object.values(sec))
+      if (Array.isArray(rnd)) { const m = rnd.find(m => m.id === id); if (m) return m; }
   return null;
 }
-
-function getLoser(m) {
-  if (!m || !m.winner) return null;
-  return m.winner === m.p1 ? m.p2 : m.p1;
-}
+function getLoser(m) { return (!m||!m.winner) ? null : m.winner === m.p1 ? m.p2 : m.p1; }
 
 function propagate(bracket) {
   const b = JSON.parse(JSON.stringify(bracket));
@@ -219,56 +205,75 @@ function propagate(bracket) {
   for (const sec of Object.values(b))
     for (const rnd of Object.values(sec))
       if (Array.isArray(rnd)) all.push(...rnd);
-
   for (const m of all) {
-    if (m.feedP1) { const src = find(m.feedP1); if (src?.winner) m.p1 = src.winner; }
-    if (m.feedP2) { const src = find(m.feedP2); if (src?.winner) m.p2 = src.winner; }
-    if (m.feedP1W) { const src = find(m.feedP1W); if (src?.winner) m.p1 = src.winner; }
-    if (m.feedP1L) { const src = find(m.feedP1L); const l = getLoser(src); if (l) m.p1 = l; }
-    if (m.feedP2L) { const src = find(m.feedP2L); const l = getLoser(src); if (l) m.p2 = l; }
+    if (m.feedP1) { const s = find(m.feedP1); if (s?.winner) m.p1 = s.winner; }
+    if (m.feedP2) { const s = find(m.feedP2); if (s?.winner) m.p2 = s.winner; }
+    if (m.feedP1W) { const s = find(m.feedP1W); if (s?.winner) m.p1 = s.winner; }
+    if (m.feedP1L) { const s = find(m.feedP1L); const l = getLoser(s); if (l) m.p1 = l; }
+    if (m.feedP2L) { const s = find(m.feedP2L); const l = getLoser(s); if (l) m.p2 = l; }
   }
   const gf = find("GF"), gfr = find("GF-R");
   if (gf?.winner && gf.winner === gf.p2) { gfr.p1 = gf.p1; gfr.p2 = gf.p2; }
   return b;
 }
 
-// State
-let state = { bracket: null, matchLog: [], tab: "bracket", openEntry: null };
+// === STATE ===
+let state = { bracket: null, matchLog: [], squeezes: {}, tab: "bracket" };
 
 function loadState() {
   try {
-    const raw = localStorage.getItem("grip-tournament-v3");
-    if (raw) {
-      const data = JSON.parse(raw);
-      if (data.bracket) state.bracket = data.bracket;
-      if (data.matchLog) state.matchLog = data.matchLog;
-    }
-  } catch(e) {}
-  if (!state.bracket) {
-    state.bracket = propagate(generateBracket(PLAYERS));
-  }
+    const raw = localStorage.getItem("grip-tournament-v5");
+    if (raw) { const d = JSON.parse(raw); if(d.bracket) state.bracket=d.bracket; if(d.matchLog) state.matchLog=d.matchLog; if(d.squeezes) state.squeezes=d.squeezes; }
+  } catch(e){}
+  if (!state.bracket) state.bracket = propagate(generateBracket(PLAYERS));
+  PLAYERS.forEach(p => { if (!state.squeezes[p.name]) state.squeezes[p.name] = [p.baseline]; });
 }
-
 function saveState() {
-  try {
-    localStorage.setItem("grip-tournament-v3", JSON.stringify({ bracket: state.bracket, matchLog: state.matchLog }));
-  } catch(e) {}
+  try { localStorage.setItem("grip-tournament-v5", JSON.stringify({ bracket: state.bracket, matchLog: state.matchLog, squeezes: state.squeezes })); } catch(e){}
 }
 
 function getChampion() {
-  const gf = findMatch(state.bracket, "GF");
-  const gfr = findMatch(state.bracket, "GF-R");
+  const gf = findMatch(state.bracket, "GF"), gfr = findMatch(state.bracket, "GF-R");
   if (gf?.winner === gf?.p1) return gf.p1;
   if (gfr?.winner) return gfr.winner;
   return null;
 }
+function getBest(name) { const a = state.squeezes[name]||[]; return a.length ? Math.max(...a) : null; }
+function getLatest(name) { const a = state.squeezes[name]||[]; return a.length ? a[a.length-1] : null; }
 
-function recordMatch(matchId, winner, s1, s2) {
+// Submit a single player's score for a match
+function submitSingle(matchId, which) {
+  const inp = document.getElementById(`inp-${matchId}-${which}`);
+  if (!inp) return;
+  const val = parseFloat(inp.value);
+  if (isNaN(val) || val <= 0) return;
+
   const m = findMatch(state.bracket, matchId);
-  if (m) { m.winner = winner; m.p1Score = s1; m.p2Score = s2; }
-  state.bracket = propagate(state.bracket);
-  state.matchLog.push({ matchId, winner, p1: m.p1, p2: m.p2, p1Score: s1, p2Score: s2, timestamp: new Date().toISOString() });
-  state.openEntry = null;
+  if (!m) return;
+
+  // Save the score to the match
+  if (which === 'p1') m.p1Score = val;
+  else m.p2Score = val;
+
+  // Log the squeeze
+  const name = which === 'p1' ? m.p1 : m.p2;
+  if (!state.squeezes[name]) state.squeezes[name] = [];
+  state.squeezes[name].push(val);
+  state.matchLog.push({ type:'squeeze', matchId, name, value: val, timestamp: new Date().toISOString() });
+
+  // Check if both scores are now in — auto-resolve
+  if (m.p1Score != null && m.p2Score != null) {
+    const p1Data = PLAYERS.find(p => p.name === m.p1);
+    const p2Data = PLAYERS.find(p => p.name === m.p2);
+    if (p1Data && p2Data) {
+      const adj1 = getAdjusted(m.p1Score, p1Data.baseline);
+      const adj2 = getAdjusted(m.p2Score, p2Data.baseline);
+      m.winner = adj1 >= adj2 ? m.p1 : m.p2;
+      state.matchLog.push({ type:'match', matchId, winner: m.winner, p1: m.p1, p2: m.p2, p1Score: m.p1Score, p2Score: m.p2Score, timestamp: new Date().toISOString() });
+    }
+    state.bracket = propagate(state.bracket);
+  }
+
   saveState();
   render();
 }
@@ -277,113 +282,74 @@ function resetTournament() {
   if (!confirm("Reset the entire tournament? This cannot be undone.")) return;
   state.bracket = propagate(generateBracket(PLAYERS));
   state.matchLog = [];
-  state.openEntry = null;
+  state.squeezes = {};
+  PLAYERS.forEach(p => { state.squeezes[p.name] = [p.baseline]; });
   saveState();
   render();
 }
 
+// === RENDER ===
+
 function renderMatch(m, isGrand, isReset) {
   const p1Data = PLAYERS.find(p => p.name === m.p1);
   const p2Data = PLAYERS.find(p => p.name === m.p2);
-  const ready = m.p1 && m.p2 && !m.winner;
-  const isOpen = state.openEntry === m.id;
   const dimmed = isReset && !m.p1;
+  const resolved = !!m.winner;
+  const p1Ready = m.p1 && !resolved;
+  const p2Ready = m.p2 && !resolved;
+  const p1HasScore = m.p1Score != null;
+  const p2HasScore = m.p2Score != null;
 
   let html = `<div class="match${isGrand ? ' grand-final' : ''}${dimmed ? ' dimmed' : ''}">`;
   if (isGrand) html += `<div class="match-header">${isReset ? 'Reset match' : 'Grand final'}</div>`;
 
-  // Slot 1
-  html += `<div class="slot${m.winner === m.p1 ? ' winner' : ''}">`;
+  // --- Player 1 slot ---
+  const p1Class = resolved && m.winner === m.p1 ? ' winner' : !resolved && p1HasScore ? ' has-score' : '';
+  html += `<div class="slot${p1Class}">`;
   html += `<span class="name${!m.p1 ? ' tbd' : ''}">${m.p1 || 'TBD'}</span>`;
-  if (m.p1Score != null) html += `<span class="score">${m.p1Score} lbs</span>`;
+
+  if (resolved && m.p1Score != null) {
+    const adj = p1Data ? getAdjusted(m.p1Score, p1Data.baseline) : '';
+    html += `<div class="scores-display"><span class="raw">${m.p1Score} lbs</span><span class="adj">${adj} adj</span></div>`;
+  } else if (p1HasScore) {
+    const adj = p1Data ? getAdjusted(m.p1Score, p1Data.baseline) : '';
+    html += `<div class="scores-display"><span class="raw">${m.p1Score} lbs</span><span class="adj">${adj} adj</span></div>`;
+  } else if (p1Ready && !p1HasScore) {
+    html += `<div class="slot-entry"><input type="number" step="0.1" id="inp-${m.id}-p1" placeholder="lbs" inputmode="decimal"><button onclick="submitSingle('${m.id}','p1')">GO</button></div>`;
+  }
   html += `</div>`;
 
-  // Slot 2
-  html += `<div class="slot${m.winner === m.p2 ? ' winner' : ''}">`;
+  // --- Player 2 slot ---
+  const p2Class = resolved && m.winner === m.p2 ? ' winner' : !resolved && p2HasScore ? ' has-score' : '';
+  html += `<div class="slot${p2Class}">`;
   html += `<span class="name${!m.p2 ? ' tbd' : ''}">${m.p2 || 'TBD'}</span>`;
-  if (m.p2Score != null) html += `<span class="score">${m.p2Score} lbs</span>`;
+
+  if (resolved && m.p2Score != null) {
+    const adj = p2Data ? getAdjusted(m.p2Score, p2Data.baseline) : '';
+    html += `<div class="scores-display"><span class="raw">${m.p2Score} lbs</span><span class="adj">${adj} adj</span></div>`;
+  } else if (p2HasScore) {
+    const adj = p2Data ? getAdjusted(m.p2Score, p2Data.baseline) : '';
+    html += `<div class="scores-display"><span class="raw">${m.p2Score} lbs</span><span class="adj">${adj} adj</span></div>`;
+  } else if (p2Ready && !p2HasScore) {
+    html += `<div class="slot-entry"><input type="number" step="0.1" id="inp-${m.id}-p2" placeholder="lbs" inputmode="decimal"><button onclick="submitSingle('${m.id}','p2')">GO</button></div>`;
+  }
   html += `</div>`;
 
-  if (ready && !isOpen) {
-    html += `<div class="enter-btn" onclick="state.openEntry='${m.id}';render()">ENTER SCORES</div>`;
-  }
-
-  if (isOpen && ready) {
-    html += `<div class="entry-form">`;
-    html += `<div class="entry-row">`;
-    html += `<div class="entry-col"><label>${m.p1}</label><input type="number" step="0.1" id="s1-${m.id}" placeholder="lbs">`;
-    if (p1Data) html += `<div class="bonus">+${getHandicap(p1Data.baseline)} bonus</div>`;
-    html += `</div>`;
-    html += `<div class="entry-col"><label>${m.p2}</label><input type="number" step="0.1" id="s2-${m.id}" placeholder="lbs">`;
-    if (p2Data) html += `<div class="bonus">+${getHandicap(p2Data.baseline)} bonus</div>`;
-    html += `</div></div>`;
-    html += `<div id="preview-${m.id}" class="preview" style="display:none"></div>`;
-    html += `<div class="entry-actions">`;
-    html += `<button class="btn-record" onclick="submitMatch('${m.id}')">RECORD</button>`;
-    html += `<button class="btn-cancel" onclick="state.openEntry=null;render()">CANCEL</button>`;
-    html += `</div></div>`;
-  }
-
-  if (m.winner) {
+  // Banner
+  if (resolved) {
     html += `<div class="win-banner">${m.winner} WINS</div>`;
+  } else if ((p1HasScore && !p2HasScore) || (!p1HasScore && p2HasScore)) {
+    const waiting = p1HasScore ? m.p2 : m.p1;
+    html += `<div class="waiting-banner">Waiting on ${waiting}</div>`;
   }
 
   html += `</div>`;
   return html;
 }
 
-function submitMatch(matchId) {
-  const s1El = document.getElementById(`s1-${matchId}`);
-  const s2El = document.getElementById(`s2-${matchId}`);
-  if (!s1El || !s2El) return;
-  const v1 = parseFloat(s1El.value);
-  const v2 = parseFloat(s2El.value);
-  if (isNaN(v1) || isNaN(v2)) return;
-
-  const m = findMatch(state.bracket, matchId);
-  const p1Data = PLAYERS.find(p => p.name === m.p1);
-  const p2Data = PLAYERS.find(p => p.name === m.p2);
-  if (!p1Data || !p2Data) return;
-
-  const adj1 = getAdjusted(v1, p1Data.baseline);
-  const adj2 = getAdjusted(v2, p2Data.baseline);
-  const winner = adj1 >= adj2 ? m.p1 : m.p2;
-  recordMatch(matchId, winner, v1, v2);
-}
-
-function setupPreviewListeners() {
-  if (!state.openEntry) return;
-  const mid = state.openEntry;
-  const s1El = document.getElementById(`s1-${mid}`);
-  const s2El = document.getElementById(`s2-${mid}`);
-  const prevEl = document.getElementById(`preview-${mid}`);
-  if (!s1El || !s2El || !prevEl) return;
-
-  const m = findMatch(state.bracket, mid);
-  const p1Data = PLAYERS.find(p => p.name === m.p1);
-  const p2Data = PLAYERS.find(p => p.name === m.p2);
-
-  function update() {
-    const v1 = parseFloat(s1El.value);
-    const v2 = parseFloat(s2El.value);
-    if (!isNaN(v1) && !isNaN(v2) && p1Data && p2Data) {
-      const a1 = getAdjusted(v1, p1Data.baseline);
-      const a2 = getAdjusted(v2, p2Data.baseline);
-      prevEl.textContent = `Adjusted: ${m.p1} ${a1} vs ${m.p2} ${a2}`;
-      prevEl.style.display = 'block';
-    } else {
-      prevEl.style.display = 'none';
-    }
-  }
-  s1El.addEventListener('input', update);
-  s2El.addEventListener('input', update);
-}
-
 function renderRound(label, matches, isGrand) {
   let html = `<div class="round"><div class="round-label">${label}</div><div class="matches">`;
-  for (const m of matches) {
-    html += renderMatch(m, isGrand, m.conditional);
-  }
+  for (const m of matches) html += renderMatch(m, isGrand, m.conditional);
   html += `</div></div>`;
   return html;
 }
@@ -391,122 +357,110 @@ function renderRound(label, matches, isGrand) {
 function renderBracket() {
   const b = state.bracket;
   let html = '';
-
-  // Winners
-  html += `<div class="bracket-section">`;
-  html += `<div class="section-label winners"><div class="dot"></div>WINNERS BRACKET</div>`;
-  html += `<div class="bracket-grid">`;
-  html += renderRound("Round 1", b.winners.r1);
-  html += renderRound("Quarterfinals", b.winners.qf);
-  html += renderRound("Semifinals", b.winners.sf);
-  html += renderRound("Winners final", b.winners.final);
+  html += `<div class="bracket-section"><div class="section-label winners"><div class="dot"></div>WINNERS BRACKET</div><div class="bracket-grid">`;
+  html += renderRound("Round 1", b.winners.r1) + renderRound("Quarterfinals", b.winners.qf) + renderRound("Semifinals", b.winners.sf) + renderRound("Winners final", b.winners.final);
   html += `</div></div>`;
-
-  // Losers
-  html += `<div class="bracket-section">`;
-  html += `<div class="section-label losers"><div class="dot"></div>LOSERS BRACKET</div>`;
-  html += `<div class="bracket-grid">`;
-  html += renderRound("LR1", b.losers.lr1);
-  html += renderRound("LR2", b.losers.lr2);
-  html += renderRound("LR3", b.losers.lr3);
-  html += renderRound("LR4", b.losers.lr4);
-  html += renderRound("LR5", b.losers.lr5);
-  html += renderRound("LR6", b.losers.lr6);
-  html += renderRound("Losers final", b.losers.final);
+  html += `<div class="bracket-section"><div class="section-label losers"><div class="dot"></div>LOSERS BRACKET</div><div class="bracket-grid">`;
+  html += renderRound("LR1", b.losers.lr1) + renderRound("LR2", b.losers.lr2) + renderRound("LR3", b.losers.lr3) + renderRound("LR4", b.losers.lr4) + renderRound("LR5", b.losers.lr5) + renderRound("LR6", b.losers.lr6) + renderRound("Losers final", b.losers.final);
   html += `</div></div>`;
-
-  // Grand Final
-  html += `<div class="bracket-section">`;
-  html += `<div class="section-label grand"><div class="dot"></div>GRAND FINAL</div>`;
-  html += `<div class="bracket-grid">`;
-  html += renderRound("Final", b.grand.final, true);
-  html += renderRound("Reset (if needed)", b.grand.reset, true);
+  html += `<div class="bracket-section"><div class="section-label grand"><div class="dot"></div>GRAND FINAL</div><div class="bracket-grid">`;
+  html += renderRound("Final", b.grand.final, true) + renderRound("Reset (if needed)", b.grand.reset, true);
   html += `</div></div>`;
-
   html += `<button class="btn-reset" onclick="resetTournament()">RESET TOURNAMENT</button>`;
+  return html;
+}
+
+function renderSqueeze() {
+  let html = `<div class="section-label" style="color:var(--text-muted)"><div class="dot" style="background:var(--blue)"></div>ALL PLAYERS — RANKED BY BEST ADJUSTED</div>`;
+  const sorted = [...PLAYERS].map(p => {
+    const best = getBest(p.name), latest = getLatest(p.name), squeezes = state.squeezes[p.name]||[];
+    const adj = best != null ? getAdjusted(best, p.baseline) : 0;
+    return { ...p, best, latest, adj, squeezes };
+  }).sort((a,b) => b.adj - a.adj);
+
+  sorted.forEach((p, i) => {
+    html += `<div class="player-card">`;
+    html += `<div style="display:flex;align-items:center;gap:10px"><span class="rank">#${i+1}</span><span class="pname">${p.name}</span></div>`;
+    html += `<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">`;
+    html += `<div class="stat"><div class="stat-label">BASELINE</div><div class="stat-val" style="color:var(--text-muted)">${p.baseline}</div></div>`;
+    html += `<div class="stat"><div class="stat-label">LATEST</div><div class="stat-val" style="color:var(--text)">${p.latest!=null?p.latest:'-'}</div></div>`;
+    html += `<div class="stat"><div class="stat-label">BEST</div><div class="stat-val" style="color:var(--green)">${p.best!=null?p.best:'-'}</div></div>`;
+    html += `<div class="stat"><div class="stat-label">ADJUSTED</div><div class="stat-val" style="color:var(--accent);font-weight:700;font-size:14px">${p.adj}</div></div>`;
+    html += `<div class="stat"><div class="stat-label">BONUS</div><div class="stat-val" style="color:var(--blue)">+${getHandicap(p.baseline)}</div></div>`;
+    html += `</div>`;
+    if (p.squeezes.length > 1) {
+      html += `<div class="squeeze-history">`;
+      p.squeezes.forEach(s => { html += `<span class="squeeze-pip${s===p.best?' best':''}">${s}</span>`; });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
   return html;
 }
 
 function renderStandings() {
   const champ = getChampion();
-  let html = `<div class="standings-table">`;
-  html += `<div class="standings-header"><span>Seed</span><span>Name</span><span>Baseline</span><span>Bonus</span><span>Status</span></div>`;
+  let html = `<div class="standings-table"><div class="standings-header"><span>#</span><span>Name</span><span>Base</span><span>Best</span><span>Adj</span><span>Bonus</span><span></span></div>`;
   PLAYERS.forEach((p, i) => {
-    const losses = state.matchLog.filter(l => (l.p1 === p.name || l.p2 === p.name) && l.winner !== p.name).length;
-    const elim = losses >= 2;
-    const isChamp = champ === p.name;
-    html += `<div class="standings-row${elim ? ' eliminated' : ''}${isChamp ? ' champ' : ''}">`;
+    const losses = state.matchLog.filter(l => l.type==='match' && (l.p1===p.name||l.p2===p.name) && l.winner!==p.name).length;
+    const elim = losses >= 2, isChamp = champ === p.name;
+    const best = getBest(p.name), adj = best != null ? getAdjusted(best, p.baseline) : '-';
+    html += `<div class="standings-row${elim?' eliminated':''}${isChamp?' champ':''}">`;
     html += `<span style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">${i+1}</span>`;
-    html += `<span style="font-weight:500;color:${isChamp ? 'var(--accent)' : 'var(--text)'}">${p.name}</span>`;
-    html += `<span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${p.baseline} lbs</span>`;
-    html += `<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">+${getHandicap(p.baseline)}</span>`;
-    html += `<span style="font-size:10px;font-family:var(--mono);color:${isChamp ? 'var(--accent)' : elim ? 'var(--red)' : 'var(--green)'}">${isChamp ? 'CHAMP' : elim ? 'OUT' : 'IN'}</span>`;
+    html += `<span style="font-weight:500;color:${isChamp?'var(--accent)':'var(--text)'}">${p.name}</span>`;
+    html += `<span style="font-family:var(--mono);font-size:12px;color:var(--text-dim)">${p.baseline}</span>`;
+    html += `<span style="font-family:var(--mono);font-size:12px;color:var(--text)">${best!=null?best:'-'}</span>`;
+    html += `<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">${adj}</span>`;
+    html += `<span style="font-family:var(--mono);font-size:12px;color:var(--blue)">+${getHandicap(p.baseline)}</span>`;
+    html += `<span style="font-size:10px;font-family:var(--mono);color:${isChamp?'var(--accent)':elim?'var(--red)':'var(--green)'}">${isChamp?'W':elim?'OUT':'IN'}</span>`;
     html += `</div>`;
   });
   html += `</div>`;
-
-  html += `<div class="formula-box">`;
-  html += `<div class="formula-title">HANDICAP FORMULA</div>`;
-  html += `<div class="formula-text">`;
-  html += `Adjusted = (squeeze &divide; baseline) &times; 100 + bonus<br>`;
-  html += `Bonus = (169 &minus; baseline) &times; 0.15<br>`;
-  html += `Higher adjusted score wins the match<br><br>`;
-  html += `Example: Eric squeezes 115 lbs (baseline 110)<br>`;
-  html += `&rarr; (115 &divide; 110) &times; 100 + 8.85 = 113.40<br>`;
-  html += `Phil squeezes 172 lbs (baseline 169)<br>`;
-  html += `&rarr; (172 &divide; 169) &times; 100 + 0 = 101.78<br>`;
-  html += `Eric wins despite lower raw score`;
-  html += `</div></div>`;
+  html += `<div class="formula-box"><div class="formula-title">HANDICAP FORMULA</div><div class="formula-text">Adjusted = (squeeze &divide; baseline) &times; 100 + bonus<br>Bonus = (169 &minus; baseline) &times; 0.15<br>Higher adjusted score wins</div></div>`;
   return html;
 }
 
 function renderLog() {
-  if (state.matchLog.length === 0) {
-    return `<div class="log-empty">No matches played yet. Head to the bracket and enter some scores.</div>`;
-  }
+  const entries = state.matchLog.filter(l => l.type);
+  if (!entries.length) return `<div class="log-empty">No activity yet. Head to the bracket and start entering scores.</div>`;
   let html = '';
-  const logs = [...state.matchLog].reverse();
-  for (const log of logs) {
-    const p1Data = PLAYERS.find(p => p.name === log.p1);
-    const p2Data = PLAYERS.find(p => p.name === log.p2);
-    const adj1 = p1Data ? getAdjusted(log.p1Score, p1Data.baseline) : 0;
-    const adj2 = p2Data ? getAdjusted(log.p2Score, p2Data.baseline) : 0;
+  [...entries].reverse().forEach(log => {
     const d = new Date(log.timestamp);
-    html += `<div class="log-entry">`;
-    html += `<div class="log-meta"><span>${log.matchId}</span><span>${d.toLocaleDateString()} ${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span></div>`;
-    html += `<div class="log-matchup">`;
-    html += `<div style="flex:1"><span class="log-player ${log.winner===log.p1?'winner':'loser'}">${log.p1}</span> <span class="log-scores">${log.p1Score} lbs &rarr; ${adj1}</span></div>`;
-    html += `<span class="log-vs">vs</span>`;
-    html += `<div style="flex:1;text-align:right"><span class="log-scores">${adj2} &larr; ${log.p2Score} lbs</span> <span class="log-player ${log.winner===log.p2?'winner':'loser'}">${log.p2}</span></div>`;
-    html += `</div></div>`;
-  }
+    const ts = `${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+    if (log.type === 'squeeze') {
+      const pData = PLAYERS.find(p => p.name === log.name);
+      const adj = pData ? getAdjusted(log.value, pData.baseline) : '';
+      html += `<div class="log-solo"><div class="log-meta"><span><span class="tag tag-squeeze">SQUEEZE</span>${log.name} &mdash; ${log.matchId}</span><span>${ts}</span></div>`;
+      html += `<div style="font-family:var(--mono);font-size:13px;color:var(--text)">${log.value} lbs <span style="color:var(--text-dim)">&rarr;</span> <span style="color:var(--accent)">${adj} adj</span></div></div>`;
+    } else if (log.type === 'match') {
+      const p1D = PLAYERS.find(p=>p.name===log.p1), p2D = PLAYERS.find(p=>p.name===log.p2);
+      const a1 = p1D ? getAdjusted(log.p1Score, p1D.baseline) : 0, a2 = p2D ? getAdjusted(log.p2Score, p2D.baseline) : 0;
+      html += `<div class="log-entry"><div class="log-meta"><span><span class="tag tag-match">MATCH</span>${log.matchId}</span><span>${ts}</span></div>`;
+      html += `<div class="log-matchup"><div style="flex:1"><span class="log-player ${log.winner===log.p1?'winner':'loser'}">${log.p1}</span> <span class="log-scores">${log.p1Score} &rarr; ${a1}</span></div>`;
+      html += `<span class="log-vs">vs</span>`;
+      html += `<div style="flex:1;text-align:right"><span class="log-scores">${a2} &larr; ${log.p2Score}</span> <span class="log-player ${log.winner===log.p2?'winner':'loser'}">${log.p2}</span></div></div></div>`;
+    }
+  });
   return html;
 }
 
 function render() {
   const champ = getChampion();
   let html = `<div class="header"><div class="header-top"><div>`;
-  html += `<div class="header-sub">HANDEFUL DYNAMOMETER</div>`;
-  html += `<h1>GRIP <span>STRENGTH</span> TOURNAMENT</h1>`;
-  html += `<div class="header-info">14 players &middot; Double elimination &middot; Handicap adjusted</div>`;
-  html += `</div>`;
-  if (champ) {
-    html += `<div class="champ-badge"><div class="label">CHAMPION</div><div class="name">${champ}</div></div>`;
-  }
-  html += `</div>`;
-  html += `<div class="tabs">`;
-  ["bracket","standings","log"].forEach(t => {
-    html += `<div class="tab${state.tab===t?' active':''}" onclick="state.tab='${t}';render()">${t}</div>`;
+  html += `<div class="header-sub">HANDEFUL DYNAMOMETER</div><h1>GRIP <span>STRENGTH</span> TOURNAMENT</h1>`;
+  html += `<div class="header-info">14 players &middot; Double elimination &middot; Handicap adjusted</div></div>`;
+  if (champ) html += `<div class="champ-badge"><div class="label">CHAMPION</div><div class="name">${champ}</div></div>`;
+  html += `</div><div class="tabs">`;
+  [{k:"bracket",l:"Bracket"},{k:"players",l:"Players"},{k:"standings",l:"Standings"},{k:"log",l:"Log"}].forEach(t => {
+    html += `<div class="tab${state.tab===t.k?' active':''}" onclick="state.tab='${t.k}';render()">${t.l}</div>`;
   });
-  html += `</div></div>`;
-  html += `<div class="content">`;
-  if (state.tab === "bracket") html += renderBracket();
-  else if (state.tab === "standings") html += renderStandings();
+  html += `</div></div><div class="content">`;
+  if (state.tab==="bracket") html += renderBracket();
+  else if (state.tab==="players") html += renderSqueeze();
+  else if (state.tab==="standings") html += renderStandings();
   else html += renderLog();
   html += `</div>`;
-
   document.getElementById('app').innerHTML = html;
-  setTimeout(setupPreviewListeners, 0);
 }
 
 loadState();
