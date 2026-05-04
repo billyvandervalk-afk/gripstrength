@@ -164,9 +164,35 @@ const PLAYERS = [
   { name: "Jake", baseline: 114 },
   { name: "Eric", baseline: 110 },
 ];
-const TOP_BASELINE = 169, HANDICAP_MULT = 0.15;
-function getHandicap(b) { return Math.round((TOP_BASELINE - b) * HANDICAP_MULT * 100) / 100; }
-function getAdjusted(sq, bl) { return Math.round(((sq / bl) * 100 + getHandicap(bl)) * 100) / 100; }
+const HANDICAP_MULT = 0.15;
+
+// Dynamic baseline: each player's effective baseline is their personal best squeeze
+function getEffectiveBaseline(name) {
+  const arr = state.squeezes[name];
+  if (arr && arr.length) return Math.max(...arr);
+  const p = PLAYERS.find(p => p.name === name);
+  return p ? p.baseline : 100;
+}
+
+// Dynamic top baseline: the highest effective baseline across all players
+function getTopBaseline() {
+  let top = 0;
+  PLAYERS.forEach(p => { const eb = getEffectiveBaseline(p.name); if (eb > top) top = eb; });
+  return top;
+}
+
+function getHandicap(effectiveBaseline) {
+  return Math.round((getTopBaseline() - effectiveBaseline) * HANDICAP_MULT * 100) / 100;
+}
+
+function getAdjusted(sq, effectiveBaseline) {
+  return Math.round(((sq / effectiveBaseline) * 100 + getHandicap(effectiveBaseline)) * 100) / 100;
+}
+
+// Convenience: get adjusted score for a player by name
+function getPlayerAdjusted(name, squeeze) {
+  return getAdjusted(squeeze, getEffectiveBaseline(name));
+}
 
 function generateBracket(s) {
   return {
@@ -313,12 +339,10 @@ function submitSingle(matchId, which) {
   state.matchLog.push({ type:'squeeze', matchId, name, value:val, timestamp:new Date().toISOString() });
 
   if (m.p1Score!=null && m.p2Score!=null) {
-    const p1D=PLAYERS.find(p=>p.name===m.p1), p2D=PLAYERS.find(p=>p.name===m.p2);
-    if (p1D && p2D) {
-      const a1=getAdjusted(m.p1Score,p1D.baseline), a2=getAdjusted(m.p2Score,p2D.baseline);
-      m.winner = a1>=a2 ? m.p1 : m.p2;
-      state.matchLog.push({ type:'match', matchId, winner:m.winner, p1:m.p1, p2:m.p2, p1Score:m.p1Score, p2Score:m.p2Score, timestamp:new Date().toISOString() });
-    }
+    // Use dynamic baselines (personal best at time of match)
+    const a1=getPlayerAdjusted(m.p1, m.p1Score), a2=getPlayerAdjusted(m.p2, m.p2Score);
+    m.winner = a1>=a2 ? m.p1 : m.p2;
+    state.matchLog.push({ type:'match', matchId, winner:m.winner, p1:m.p1, p2:m.p2, p1Score:m.p1Score, p2Score:m.p2Score, timestamp:new Date().toISOString() });
     state.bracket = propagate(state.bracket);
   }
   saveState(); render();
@@ -391,7 +415,7 @@ function renderMatch(m, isGrand, isReset) {
   const p1c = resolved&&m.winner===m.p1?' winner':!resolved&&p1Has?' has-score':'';
   h += `<div class="slot${p1c}"><span class="name${!m.p1?' tbd':''}">${m.p1||'TBD'}</span>`;
   if (p1Has) {
-    const adj = p1D ? getAdjusted(m.p1Score, p1D.baseline) : '';
+    const adj = m.p1 ? getPlayerAdjusted(m.p1, m.p1Score) : '';
     h += `<div class="scores-display"><div class="score-vals"><span class="raw">${m.p1Score} lbs</span><span class="adj">${adj} adj</span></div>`;
     if (!resolved) h += `<div class="undo-x" onclick="undoSingle('${m.id}','p1')" title="Remove score">&times;</div>`;
     h += `</div>`;
@@ -404,7 +428,7 @@ function renderMatch(m, isGrand, isReset) {
   const p2c = resolved&&m.winner===m.p2?' winner':!resolved&&p2Has?' has-score':'';
   h += `<div class="slot${p2c}"><span class="name${!m.p2?' tbd':''}">${m.p2||'TBD'}</span>`;
   if (p2Has) {
-    const adj = p2D ? getAdjusted(m.p2Score, p2D.baseline) : '';
+    const adj = m.p2 ? getPlayerAdjusted(m.p2, m.p2Score) : '';
     h += `<div class="scores-display"><div class="score-vals"><span class="raw">${m.p2Score} lbs</span><span class="adj">${adj} adj</span></div>`;
     if (!resolved) h += `<div class="undo-x" onclick="undoSingle('${m.id}','p2')" title="Remove score">&times;</div>`;
     h += `</div>`;
@@ -460,20 +484,23 @@ function renderPlayers() {
 
   // Player cards
   h += `<div class="section-label" style="color:var(--text-muted)"><div class="dot" style="background:var(--blue)"></div>ALL PLAYERS — RANKED BY BEST ADJUSTED</div>`;
+  h += `<div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;font-family:var(--mono)">Top baseline: ${getTopBaseline()} lbs (updates as players set new bests)</div>`;
   const sorted = [...PLAYERS].map(p => {
     const best=getBest(p.name), latest=getLatest(p.name), squeezes=state.squeezes[p.name]||[];
-    const adj = best!=null ? getAdjusted(best,p.baseline) : 0;
-    return { ...p, best, latest, adj, squeezes };
+    const effBase = getEffectiveBaseline(p.name);
+    const adj = best!=null ? getPlayerAdjusted(p.name, best) : 0;
+    return { ...p, best, latest, adj, squeezes, effBase };
   }).sort((a,b) => b.adj - a.adj);
 
   sorted.forEach((p,i) => {
     h += `<div class="player-card"><div style="display:flex;align-items:center;gap:10px"><span class="rank">#${i+1}</span><span class="pname">${p.name}</span></div>`;
     h += `<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">`;
-    h += `<div class="stat"><div class="stat-label">BASELINE</div><div class="stat-val" style="color:var(--text-muted)">${p.baseline}</div></div>`;
+    h += `<div class="stat"><div class="stat-label">ORIGINAL</div><div class="stat-val" style="color:var(--text-dim)">${p.baseline}</div></div>`;
+    h += `<div class="stat"><div class="stat-label">EFF. BASE</div><div class="stat-val" style="color:var(--text-muted)">${p.effBase}</div></div>`;
     h += `<div class="stat"><div class="stat-label">LATEST</div><div class="stat-val" style="color:var(--text)">${p.latest!=null?p.latest:'-'}</div></div>`;
     h += `<div class="stat"><div class="stat-label">BEST</div><div class="stat-val" style="color:var(--green)">${p.best!=null?p.best:'-'}</div></div>`;
     h += `<div class="stat"><div class="stat-label">ADJUSTED</div><div class="stat-val" style="color:var(--accent);font-weight:700;font-size:14px">${p.adj}</div></div>`;
-    h += `<div class="stat"><div class="stat-label">BONUS</div><div class="stat-val" style="color:var(--blue)">+${getHandicap(p.baseline)}</div></div>`;
+    h += `<div class="stat"><div class="stat-label">BONUS</div><div class="stat-val" style="color:var(--blue)">+${getHandicap(p.effBase)}</div></div>`;
     h += `</div>`;
     if (p.squeezes.length > 1) {
       h += `<div class="squeeze-history">`;
@@ -487,23 +514,24 @@ function renderPlayers() {
 
 function renderStandings() {
   const champ = getChampion();
-  let h = `<div class="standings-table"><div class="standings-header"><span>#</span><span>Name</span><span>Base</span><span>Best</span><span>Adj</span><span>Bonus</span><span></span></div>`;
+  let h = `<div class="standings-table"><div class="standings-header"><span>#</span><span>Name</span><span>Eff.Base</span><span>Best</span><span>Adj</span><span>Bonus</span><span></span></div>`;
   PLAYERS.forEach((p,i) => {
     const losses = state.matchLog.filter(l=>l.type==='match'&&(l.p1===p.name||l.p2===p.name)&&l.winner!==p.name).length;
     const elim=losses>=2, isChamp=champ===p.name;
-    const best=getBest(p.name), adj=best!=null?getAdjusted(best,p.baseline):'-';
+    const best=getBest(p.name), effBase=getEffectiveBaseline(p.name);
+    const adj=best!=null?getPlayerAdjusted(p.name, best):'-';
     h += `<div class="standings-row${elim?' eliminated':''}${isChamp?' champ':''}">`;
     h += `<span style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">${i+1}</span>`;
     h += `<span style="font-weight:500;color:${isChamp?'var(--accent)':'var(--text)'}">${p.name}</span>`;
-    h += `<span style="font-family:var(--mono);font-size:12px;color:var(--text-dim)">${p.baseline}</span>`;
+    h += `<span style="font-family:var(--mono);font-size:12px;color:var(--text-dim)">${effBase}</span>`;
     h += `<span style="font-family:var(--mono);font-size:12px;color:var(--text)">${best!=null?best:'-'}</span>`;
     h += `<span style="font-family:var(--mono);font-size:12px;color:var(--accent)">${adj}</span>`;
-    h += `<span style="font-family:var(--mono);font-size:12px;color:var(--blue)">+${getHandicap(p.baseline)}</span>`;
+    h += `<span style="font-family:var(--mono);font-size:12px;color:var(--blue)">+${getHandicap(effBase)}</span>`;
     h += `<span style="font-size:10px;font-family:var(--mono);color:${isChamp?'var(--accent)':elim?'var(--red)':'var(--green)'}">${isChamp?'W':elim?'OUT':'IN'}</span>`;
     h += `</div>`;
   });
   h += `</div>`;
-  h += `<div class="formula-box"><div class="formula-title">HANDICAP FORMULA</div><div class="formula-text">Adjusted = (squeeze &divide; baseline) &times; 100 + bonus<br>Bonus = (169 &minus; baseline) &times; 0.15<br>Higher adjusted score wins</div></div>`;
+  h += `<div class="formula-box"><div class="formula-title">HANDICAP FORMULA</div><div class="formula-text">Adjusted = (squeeze &divide; effective baseline) &times; 100 + bonus<br>Effective baseline = your personal best squeeze<br>Bonus = (top baseline &minus; your baseline) &times; 0.15<br>Top baseline updates dynamically: currently <strong>${getTopBaseline()}</strong><br>Higher adjusted score wins &middot; Sandbagging raises your baseline</div></div>`;
   return h;
 }
 
@@ -515,13 +543,11 @@ function renderLog() {
     const d=new Date(log.timestamp);
     const ts=`${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
     if (log.type==='squeeze') {
-      const pD=PLAYERS.find(p=>p.name===log.name);
-      const adj=pD?getAdjusted(log.value,pD.baseline):'';
+      const adj=getPlayerAdjusted(log.name, log.value);
       h += `<div class="log-solo"><div class="log-meta"><span><span class="tag tag-squeeze">SQUEEZE</span>${log.name} &mdash; ${log.matchId}</span><span>${ts}</span></div>`;
       h += `<div style="font-family:var(--mono);font-size:13px;color:var(--text)">${log.value} lbs <span style="color:var(--text-dim)">&rarr;</span> <span style="color:var(--accent)">${adj} adj</span></div></div>`;
     } else if (log.type==='match') {
-      const p1D=PLAYERS.find(p=>p.name===log.p1), p2D=PLAYERS.find(p=>p.name===log.p2);
-      const a1=p1D?getAdjusted(log.p1Score,p1D.baseline):0, a2=p2D?getAdjusted(log.p2Score,p2D.baseline):0;
+      const a1=getPlayerAdjusted(log.p1, log.p1Score), a2=getPlayerAdjusted(log.p2, log.p2Score);
       h += `<div class="log-entry"><div class="log-meta"><span><span class="tag tag-match">MATCH</span>${log.matchId}</span><span>${ts}</span></div>`;
       h += `<div class="log-matchup"><div style="flex:1"><span class="log-player ${log.winner===log.p1?'winner':'loser'}">${log.p1}</span> <span class="log-scores">${log.p1Score} &rarr; ${a1}</span></div>`;
       h += `<span class="log-vs">vs</span>`;
@@ -566,22 +592,31 @@ function setupWhatIfListeners() {
     const name = sel.value, val = parseFloat(inp.value);
     const pD = PLAYERS.find(p => p.name === name);
     if (name && !isNaN(val) && val > 0 && pD) {
-      const adj = getAdjusted(val, pD.baseline);
-      const pctOfBase = Math.round((val / pD.baseline) * 1000) / 10;
+      const effBase = getEffectiveBaseline(name);
+      // If this squeeze would become the new best, the effective baseline shifts
+      const wouldBeNewBest = val > effBase;
+      const futureBase = wouldBeNewBest ? val : effBase;
+      // Recalculate top baseline if this squeeze changes it
+      let futureTop = getTopBaseline();
+      if (val > futureTop) futureTop = val;
+      const futureBonus = Math.round((futureTop - futureBase) * HANDICAP_MULT * 100) / 100;
+      const adj = Math.round(((val / futureBase) * 100 + futureBonus) * 100) / 100;
+      const pctOfBase = Math.round((val / effBase) * 1000) / 10;
       const best = getBest(name);
-      const bestAdj = best != null ? getAdjusted(best, pD.baseline) : null;
+      const bestAdj = best != null ? getPlayerAdjusted(name, best) : null;
       let comparison = '';
       if (bestAdj != null) {
         const diff = Math.round((adj - bestAdj) * 100) / 100;
         comparison = diff > 0
-          ? `<span style="color:var(--green)">+${diff} vs current best</span>`
+          ? `<span style="color:var(--green)">+${diff} vs current best adjusted</span>`
           : diff < 0
-          ? `<span style="color:var(--red)">${diff} vs current best</span>`
+          ? `<span style="color:var(--red)">${diff} vs current best adjusted</span>`
           : `<span style="color:var(--text-dim)">Same as current best</span>`;
       }
       res.innerHTML = `<div style="margin-bottom:6px"><span style="color:var(--text-muted)">${name} squeezes ${val} lbs</span></div>`;
       res.innerHTML += `<div style="margin-bottom:4px">Adjusted score: <span class="big">${adj}</span></div>`;
-      res.innerHTML += `<div style="font-size:11px;color:var(--text-dim)">${pctOfBase}% of baseline (${pD.baseline}) &middot; +${getHandicap(pD.baseline)} bonus</div>`;
+      res.innerHTML += `<div style="font-size:11px;color:var(--text-dim)">${pctOfBase}% of current baseline (${effBase}) &middot; +${futureBonus} bonus</div>`;
+      if (wouldBeNewBest) res.innerHTML += `<div style="font-size:11px;margin-top:4px;color:var(--yellow)">&#9888; New personal best — baseline would shift from ${effBase} to ${val}</div>`;
       if (comparison) res.innerHTML += `<div style="font-size:11px;margin-top:4px">${comparison}</div>`;
       res.style.display = 'block';
     } else res.style.display = 'none';
