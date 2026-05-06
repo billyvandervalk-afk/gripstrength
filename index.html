@@ -19,7 +19,6 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
   --divider: #1a1e2a; --input-bg: #0e1017; --input-border: #252938;
   --mono: 'JetBrains Mono', monospace; --font: 'Anybody', sans-serif;
 }
-
 .header { padding: 24px 24px 0; border-bottom: 1px solid var(--divider); }
 .header-top { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
 .header-sub { font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 2px; margin-bottom: 4px; }
@@ -29,61 +28,47 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
 .champ-badge { background: var(--accent-glow); border: 1px solid var(--accent); border-radius: 8px; padding: 8px 16px; text-align: center; }
 .champ-badge .label { font-size: 9px; font-family: var(--mono); color: var(--accent); letter-spacing: 1.5px; }
 .champ-badge .name { font-size: 20px; font-weight: 900; color: var(--accent); }
-
+.live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-right: 6px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 .tabs { display: flex; gap: 0; flex-wrap: wrap; }
 .tab { padding: 8px 16px; font-size: 11px; font-family: var(--mono); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; color: var(--text-dim); border-bottom: 2px solid transparent; transition: all 0.2s; user-select: none; }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
 .content { padding: 20px; overflow-x: auto; }
 .section-label { font-size: 11px; font-family: var(--mono); font-weight: 700; letter-spacing: 1.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .section-label .dot { width: 8px; height: 8px; border-radius: 50%; }
-.section-label.winners { color: var(--green); }
-.section-label.winners .dot { background: var(--green); }
-.section-label.losers { color: var(--red); }
-.section-label.losers .dot { background: var(--red); }
-.section-label.grand { color: var(--accent); }
-.section-label.grand .dot { background: var(--accent); }
-
+.section-label.winners { color: var(--green); } .section-label.winners .dot { background: var(--green); }
+.section-label.losers { color: var(--red); } .section-label.losers .dot { background: var(--red); }
+.section-label.grand { color: var(--accent); } .section-label.grand .dot { background: var(--accent); }
 .bracket-section { margin-bottom: 28px; }
 .bracket-grid { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; }
 .round { min-width: 185px; max-width: 220px; flex: 0 0 200px; }
 .round-label { font-size: 10px; font-weight: 700; color: var(--text-dim); letter-spacing: 1.5px; margin-bottom: 10px; font-family: var(--mono); text-transform: uppercase; }
 .matches { display: flex; flex-direction: column; gap: 10px; }
-
 .match { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; transition: opacity 0.3s; }
 .match.grand-final { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
 .match.dimmed { opacity: 0.3; }
 .match-header { background: var(--accent); color: var(--bg); font-size: 10px; font-weight: 700; text-align: center; padding: 3px 0; letter-spacing: 1.5px; font-family: var(--mono); text-transform: uppercase; }
-
 .slot { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; font-size: 13px; font-family: var(--font); border-left: 3px solid transparent; transition: all 0.2s; gap: 6px; }
 .slot + .slot { border-top: 1px solid var(--divider); }
 .slot.winner { background: var(--accent-glow); border-left-color: var(--accent); }
 .slot.has-score { border-left-color: var(--green); background: var(--green-glow); }
-.slot .name { color: var(--text); flex: 1; min-width: 0; }
-.slot .name.tbd { color: var(--text-dim); font-style: italic; }
+.slot .name { color: var(--text); flex: 1; min-width: 0; } .slot .name.tbd { color: var(--text-dim); font-style: italic; }
 .slot .scores-display { display: flex; align-items: center; gap: 6px; }
 .slot .raw { font-family: var(--mono); font-size: 12px; color: var(--text); }
 .slot .adj { font-family: var(--mono); font-size: 10px; color: var(--accent); }
 .slot .score-vals { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
-
 .undo-x { width: 18px; height: 18px; border-radius: 50%; background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); font-size: 11px; font-family: var(--mono); cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; flex-shrink: 0; }
 .undo-x:hover { background: rgba(239,68,68,0.3); }
-
 .slot-entry { display: flex; align-items: center; gap: 4px; }
 .slot-entry input { width: 65px; padding: 4px 6px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 4px; color: var(--text); font-size: 13px; font-family: var(--mono); outline: none; text-align: right; }
 .slot-entry input:focus { border-color: var(--accent); }
 .slot-entry button { padding: 4px 8px; font-size: 10px; font-family: var(--mono); color: var(--bg); background: var(--accent); border: none; border-radius: 4px; cursor: pointer; font-weight: 700; white-space: nowrap; }
-
 .win-banner { padding: 4px 10px; text-align: center; font-size: 10px; font-family: var(--mono); color: var(--green); border-top: 1px solid var(--divider); background: var(--green-glow); letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .waiting-banner { padding: 4px 10px; text-align: center; font-size: 10px; font-family: var(--mono); color: var(--yellow); border-top: 1px solid var(--divider); background: var(--yellow-glow); letter-spacing: 0.5px; }
-
 .undo-match-btn { font-size: 9px; font-family: var(--mono); color: var(--red); background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); border-radius: 3px; padding: 1px 6px; cursor: pointer; letter-spacing: 0.3px; }
 .undo-match-btn:hover { background: rgba(239,68,68,0.25); }
 .undo-match-btn.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
-
 .btn-reset { display: inline-block; padding: 6px 16px; font-size: 10px; font-family: var(--mono); color: var(--red-dim); border: 1px solid var(--red-dim); border-radius: 4px; cursor: pointer; letter-spacing: 1px; margin-top: 8px; background: transparent; }
-
-/* Reset modal */
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 999; }
 .modal-box { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px; max-width: 340px; width: 90%; }
 .modal-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--red); }
@@ -92,40 +77,29 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
 .modal-box input:focus { border-color: var(--red); }
 .modal-actions { display: flex; gap: 8px; }
 .modal-actions button { flex: 1; padding: 8px 0; font-size: 11px; font-family: var(--mono); font-weight: 700; border-radius: 4px; cursor: pointer; letter-spacing: 0.5px; border: none; }
-.modal-confirm { background: var(--red); color: white; }
-.modal-confirm:disabled { opacity: 0.3; cursor: not-allowed; }
+.modal-confirm { background: var(--red); color: white; } .modal-confirm:disabled { opacity: 0.3; cursor: not-allowed; }
 .modal-cancel { background: var(--card); color: var(--text-muted); border: 1px solid var(--input-border) !important; }
-
-/* Standings */
 .standings-table { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; overflow-x: auto; }
 .standings-header { display: grid; grid-template-columns: 36px 1fr 70px 70px 70px 70px 50px; padding: 10px 12px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 1px; border-bottom: 1px solid var(--divider); text-transform: uppercase; min-width: 500px; }
 .standings-row { display: grid; grid-template-columns: 36px 1fr 70px 70px 70px 70px 50px; padding: 10px 12px; font-size: 13px; align-items: center; min-width: 500px; }
 .standings-row + .standings-row { border-top: 1px solid var(--divider); }
-.standings-row.eliminated { opacity: 0.5; }
-.standings-row.champ { background: var(--accent-glow); }
-
+.standings-row.eliminated { opacity: 0.5; } .standings-row.champ { background: var(--accent-glow); }
 .formula-box { margin-top: 20px; padding: 16px; background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; }
 .formula-title { font-size: 11px; font-family: var(--mono); color: var(--accent); letter-spacing: 1px; margin-bottom: 10px; }
 .formula-text { font-size: 12px; color: var(--text-muted); font-family: var(--mono); line-height: 1.8; }
-
-/* What-if calc */
 .whatif-box { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: 16px; margin-bottom: 20px; }
 .whatif-box .title { font-size: 11px; font-family: var(--mono); color: var(--blue); letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .whatif-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
 .whatif-row select, .whatif-row input { padding: 6px 8px; background: var(--card); border: 1px solid var(--input-border); border-radius: 4px; color: var(--text); font-size: 14px; font-family: var(--mono); outline: none; }
-.whatif-row select { min-width: 130px; appearance: auto; }
-.whatif-row input { width: 90px; }
+.whatif-row select { min-width: 130px; appearance: auto; } .whatif-row input { width: 90px; }
 .whatif-row select:focus, .whatif-row input:focus { border-color: var(--blue); }
 .whatif-result { margin-top: 10px; padding: 10px; background: var(--input-bg); border-radius: 6px; font-family: var(--mono); font-size: 13px; color: var(--text); display: none; }
 .whatif-result .big { font-size: 22px; font-weight: 900; color: var(--accent); }
-
 .log-empty { text-align: center; padding: 40px; color: var(--text-dim); font-family: var(--mono); font-size: 12px; }
 .log-entry { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
 .log-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 1px; }
 .log-matchup { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px; }
-.log-player { font-size: 14px; }
-.log-player.winner { font-weight: 700; color: var(--accent); }
-.log-player.loser { font-weight: 400; color: var(--text-muted); }
+.log-player { font-size: 14px; } .log-player.winner { font-weight: 700; color: var(--accent); } .log-player.loser { font-weight: 400; color: var(--text-muted); }
 .log-scores { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
 .log-vs { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin: 0 8px; }
 .log-solo { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
@@ -133,21 +107,38 @@ body { background: #0a0c10; color: #e2e4e9; font-family: 'Anybody', sans-serif; 
 .tag-squeeze { color: var(--blue); background: var(--blue-glow); }
 .tag-match { color: var(--green); background: var(--green-glow); }
 .tag-undo { color: var(--red); background: rgba(239,68,68,0.1); }
-
 .player-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .player-card .rank { font-family: var(--mono); font-size: 11px; color: var(--text-dim); min-width: 24px; }
 .player-card .pname { font-weight: 500; font-size: 15px; }
-.stat { text-align: center; }
-.stat-label { font-size: 9px; font-family: var(--mono); color: var(--text-dim); }
-.stat-val { font-family: var(--mono); font-size: 13px; }
+.stat { text-align: center; } .stat-label { font-size: 9px; font-family: var(--mono); color: var(--text-dim); } .stat-val { font-family: var(--mono); font-size: 13px; }
 .squeeze-history { margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap; width: 100%; }
 .squeeze-pip { font-size: 10px; font-family: var(--mono); color: var(--text-dim); background: var(--input-bg); padding: 2px 6px; border-radius: 3px; }
 .squeeze-pip.best { color: var(--accent); background: var(--accent-glow); }
+.loading-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: var(--mono); color: var(--accent); font-size: 14px; letter-spacing: 1px; }
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app"><div class="loading-screen">Connecting to database...</div></div>
+
+<!-- Firebase SDK (compat for simplicity) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
 <script>
+// === FIREBASE CONFIG ===
+firebase.initializeApp({
+  apiKey: "AIzaSyA263eTeQ8qZJaQwx3wy041OiloZCPxLD4",
+  authDomain: "grip-strength-challenge.firebaseapp.com",
+  databaseURL: "https://grip-strength-challenge-default-rtdb.firebaseio.com",
+  projectId: "grip-strength-challenge",
+  storageBucket: "grip-strength-challenge.firebasestorage.app",
+  messagingSenderId: "1056669423822",
+  appId: "1:1056669423822:web:cac7e4963314e5400d989f"
+});
+const db = firebase.database();
+const dataRef = db.ref('tournament');
+
+// === PLAYERS ===
 const PLAYERS = [
   { name: "Phil", baseline: 169 },
   { name: "Billy", baseline: 167 },
@@ -166,34 +157,22 @@ const PLAYERS = [
 ];
 const HANDICAP_MULT = 0.15;
 
-// Dynamic baseline: each player's effective baseline is their personal best squeeze
 function getEffectiveBaseline(name) {
   const arr = state.squeezes[name];
   if (arr && arr.length) return Math.max(...arr);
   const p = PLAYERS.find(p => p.name === name);
   return p ? p.baseline : 100;
 }
-
-// Dynamic top baseline: the highest effective baseline across all players
 function getTopBaseline() {
   let top = 0;
   PLAYERS.forEach(p => { const eb = getEffectiveBaseline(p.name); if (eb > top) top = eb; });
   return top;
 }
+function getHandicap(eb) { return Math.round((getTopBaseline() - eb) * HANDICAP_MULT * 100) / 100; }
+function getAdjusted(sq, eb) { return Math.round(((sq / eb) * 100 + getHandicap(eb)) * 100) / 100; }
+function getPlayerAdjusted(name, sq) { return getAdjusted(sq, getEffectiveBaseline(name)); }
 
-function getHandicap(effectiveBaseline) {
-  return Math.round((getTopBaseline() - effectiveBaseline) * HANDICAP_MULT * 100) / 100;
-}
-
-function getAdjusted(sq, effectiveBaseline) {
-  return Math.round(((sq / effectiveBaseline) * 100 + getHandicap(effectiveBaseline)) * 100) / 100;
-}
-
-// Convenience: get adjusted score for a player by name
-function getPlayerAdjusted(name, squeeze) {
-  return getAdjusted(squeeze, getEffectiveBaseline(name));
-}
-
+// === BRACKET ===
 function generateBracket(s) {
   return {
     winners: {
@@ -215,9 +194,7 @@ function generateBracket(s) {
         { id:"WSF-1", p1:null, p2:null, feedP1:"WQF-1", feedP2:"WQF-2", winner:null, p1Score:null, p2Score:null },
         { id:"WSF-2", p1:null, p2:null, feedP1:"WQF-3", feedP2:"WQF-4", winner:null, p1Score:null, p2Score:null },
       ],
-      final: [
-        { id:"WF", p1:null, p2:null, feedP1:"WSF-1", feedP2:"WSF-2", winner:null, p1Score:null, p2Score:null },
-      ],
+      final: [{ id:"WF", p1:null, p2:null, feedP1:"WSF-1", feedP2:"WSF-2", winner:null, p1Score:null, p2Score:null }],
     },
     losers: {
       lr1: [
@@ -273,26 +250,19 @@ function propagate(bracket) {
   return b;
 }
 
-// Check if any downstream match from this one has scores entered
 function hasDownstreamScores(matchId) {
   const all = [];
   for (const sec of Object.values(state.bracket))
     for (const rnd of Object.values(sec))
       if (Array.isArray(rnd)) all.push(...rnd);
-  // Find all matches that feed from this matchId (as winner or loser source)
-  function dependsOn(m, srcId) {
-    return m.feedP1 === srcId || m.feedP2 === srcId || m.feedP1W === srcId || m.feedP1L === srcId || m.feedP2L === srcId;
-  }
-  // BFS: find all downstream matches
-  const visited = new Set();
-  const queue = [matchId];
+  function dependsOn(m, srcId) { return m.feedP1===srcId||m.feedP2===srcId||m.feedP1W===srcId||m.feedP1L===srcId||m.feedP2L===srcId; }
+  const visited = new Set(), queue = [matchId];
   while (queue.length) {
     const cur = queue.shift();
     for (const m of all) {
       if (!visited.has(m.id) && dependsOn(m, cur)) {
-        if (m.p1Score != null || m.p2Score != null) return true;
-        visited.add(m.id);
-        queue.push(m.id);
+        if (m.p1Score!=null||m.p2Score!=null) return true;
+        visited.add(m.id); queue.push(m.id);
       }
     }
   }
@@ -300,21 +270,38 @@ function hasDownstreamScores(matchId) {
 }
 
 // === STATE ===
-let state = { bracket: null, matchLog: [], squeezes: {}, tab: "bracket", showResetModal: false };
+let state = { bracket: null, matchLog: [], squeezes: {}, tab: "bracket", showResetModal: false, loaded: false };
 
-function loadState() {
-  try {
-    const raw = localStorage.getItem("grip-tournament-v5");
-    if (raw) { const d=JSON.parse(raw); if(d.bracket) state.bracket=d.bracket; if(d.matchLog) state.matchLog=d.matchLog; if(d.squeezes) state.squeezes=d.squeezes; }
-  } catch(e){}
-  if (!state.bracket) state.bracket = propagate(generateBracket(PLAYERS));
+function initSqueezes() {
   PLAYERS.forEach(p => { if (!state.squeezes[p.name]) state.squeezes[p.name] = [p.baseline]; });
 }
-function saveState() {
-  try { localStorage.setItem("grip-tournament-v5", JSON.stringify({ bracket: state.bracket, matchLog: state.matchLog, squeezes: state.squeezes })); } catch(e){}
+
+// === FIREBASE SYNC ===
+function saveToFirebase() {
+  dataRef.set({ bracket: state.bracket, matchLog: state.matchLog, squeezes: state.squeezes });
 }
 
+// Listen for real-time changes
+dataRef.on('value', (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    if (data.bracket) state.bracket = data.bracket;
+    if (data.matchLog) state.matchLog = data.matchLog;
+    if (data.squeezes) state.squeezes = data.squeezes;
+  }
+  if (!state.bracket) {
+    state.bracket = propagate(generateBracket(PLAYERS));
+    initSqueezes();
+    saveToFirebase();
+  } else {
+    initSqueezes();
+  }
+  state.loaded = true;
+  render();
+});
+
 function getChampion() {
+  if (!state.bracket) return null;
   const gf=findMatch(state.bracket,"GF"), gfr=findMatch(state.bracket,"GF-R");
   if (gf?.winner===gf?.p1) return gf.p1;
   if (gfr?.winner) return gfr.winner;
@@ -323,94 +310,74 @@ function getChampion() {
 function getBest(name) { const a=state.squeezes[name]||[]; return a.length?Math.max(...a):null; }
 function getLatest(name) { const a=state.squeezes[name]||[]; return a.length?a[a.length-1]:null; }
 
-// Submit single score
 function submitSingle(matchId, which) {
   const inp = document.getElementById(`inp-${matchId}-${which}`);
   if (!inp) return;
   const val = parseFloat(inp.value);
-  if (isNaN(val) || val <= 0) return;
+  if (isNaN(val)||val<=0) return;
   const m = findMatch(state.bracket, matchId);
   if (!m) return;
-
   if (which==='p1') m.p1Score=val; else m.p2Score=val;
-  const name = which==='p1' ? m.p1 : m.p2;
-  if (!state.squeezes[name]) state.squeezes[name] = [];
+  const name = which==='p1'?m.p1:m.p2;
+  if (!state.squeezes[name]) state.squeezes[name]=[];
   state.squeezes[name].push(val);
+  if (!state.matchLog) state.matchLog=[];
   state.matchLog.push({ type:'squeeze', matchId, name, value:val, timestamp:new Date().toISOString() });
-
   if (m.p1Score!=null && m.p2Score!=null) {
-    // Use dynamic baselines (personal best at time of match)
-    const a1=getPlayerAdjusted(m.p1, m.p1Score), a2=getPlayerAdjusted(m.p2, m.p2Score);
-    m.winner = a1>=a2 ? m.p1 : m.p2;
+    const a1=getPlayerAdjusted(m.p1,m.p1Score), a2=getPlayerAdjusted(m.p2,m.p2Score);
+    m.winner = a1>=a2?m.p1:m.p2;
     state.matchLog.push({ type:'match', matchId, winner:m.winner, p1:m.p1, p2:m.p2, p1Score:m.p1Score, p2Score:m.p2Score, timestamp:new Date().toISOString() });
     state.bracket = propagate(state.bracket);
   }
-  saveState(); render();
+  saveToFirebase();
 }
 
-// Undo a single pending score
 function undoSingle(matchId, which) {
   const m = findMatch(state.bracket, matchId);
-  if (!m || m.winner) return;
-  const name = which==='p1' ? m.p1 : m.p2;
-  const val = which==='p1' ? m.p1Score : m.p2Score;
-
+  if (!m||m.winner) return;
+  const name = which==='p1'?m.p1:m.p2;
+  const val = which==='p1'?m.p1Score:m.p2Score;
   if (which==='p1') m.p1Score=null; else m.p2Score=null;
-
-  // Remove the last matching squeeze from that player's history
-  if (val != null && state.squeezes[name]) {
+  if (val!=null && state.squeezes[name]) {
     const idx = state.squeezes[name].lastIndexOf(val);
-    if (idx > 0) state.squeezes[name].splice(idx, 1); // don't remove baseline at index 0
+    if (idx>0) state.squeezes[name].splice(idx,1);
   }
+  if (!state.matchLog) state.matchLog=[];
   state.matchLog.push({ type:'undo-score', matchId, name, value:val, timestamp:new Date().toISOString() });
-  saveState(); render();
+  saveToFirebase();
 }
 
-// Undo a completed match
 function undoMatch(matchId) {
   if (hasDownstreamScores(matchId)) return;
   const m = findMatch(state.bracket, matchId);
-  if (!m || !m.winner) return;
-
-  const p1Name=m.p1, p2Name=m.p2, p1Val=m.p1Score, p2Val=m.p2Score;
-
-  // Remove scores from squeeze history
-  if (p1Val!=null && state.squeezes[p1Name]) {
-    const idx = state.squeezes[p1Name].lastIndexOf(p1Val);
-    if (idx > 0) state.squeezes[p1Name].splice(idx, 1);
-  }
-  if (p2Val!=null && state.squeezes[p2Name]) {
-    const idx = state.squeezes[p2Name].lastIndexOf(p2Val);
-    if (idx > 0) state.squeezes[p2Name].splice(idx, 1);
-  }
-
+  if (!m||!m.winner) return;
+  const p1N=m.p1,p2N=m.p2,p1V=m.p1Score,p2V=m.p2Score;
+  if (p1V!=null && state.squeezes[p1N]) { const i=state.squeezes[p1N].lastIndexOf(p1V); if(i>0) state.squeezes[p1N].splice(i,1); }
+  if (p2V!=null && state.squeezes[p2N]) { const i=state.squeezes[p2N].lastIndexOf(p2V); if(i>0) state.squeezes[p2N].splice(i,1); }
   m.winner=null; m.p1Score=null; m.p2Score=null;
   state.bracket = propagate(state.bracket);
-  state.matchLog.push({ type:'undo-match', matchId, p1:p1Name, p2:p2Name, timestamp:new Date().toISOString() });
-  saveState(); render();
+  if (!state.matchLog) state.matchLog=[];
+  state.matchLog.push({ type:'undo-match', matchId, p1:p1N, p2:p2N, timestamp:new Date().toISOString() });
+  saveToFirebase();
 }
 
 function resetTournament() {
   state.bracket = propagate(generateBracket(PLAYERS));
   state.matchLog = [];
   state.squeezes = {};
-  PLAYERS.forEach(p => { state.squeezes[p.name] = [p.baseline]; });
+  initSqueezes();
   state.showResetModal = false;
-  saveState(); render();
+  saveToFirebase();
 }
 
 // === RENDER ===
-
 function renderMatch(m, isGrand, isReset) {
-  const p1D=PLAYERS.find(p=>p.name===m.p1), p2D=PLAYERS.find(p=>p.name===m.p2);
   const dimmed=isReset&&!m.p1, resolved=!!m.winner;
   const p1Ready=m.p1&&!resolved, p2Ready=m.p2&&!resolved;
   const p1Has=m.p1Score!=null, p2Has=m.p2Score!=null;
   const canUndo = resolved && !hasDownstreamScores(m.id);
-
   let h = `<div class="match${isGrand?' grand-final':''}${dimmed?' dimmed':''}">`;
   if (isGrand) h += `<div class="match-header">${isReset?'Reset match':'Grand final'}</div>`;
-
   // P1
   const p1c = resolved&&m.winner===m.p1?' winner':!resolved&&p1Has?' has-score':'';
   h += `<div class="slot${p1c}"><span class="name${!m.p1?' tbd':''}">${m.p1||'TBD'}</span>`;
@@ -423,7 +390,6 @@ function renderMatch(m, isGrand, isReset) {
     h += `<div class="slot-entry"><input type="number" step="0.1" id="inp-${m.id}-p1" placeholder="lbs" inputmode="decimal"><button onclick="submitSingle('${m.id}','p1')">GO</button></div>`;
   }
   h += `</div>`;
-
   // P2
   const p2c = resolved&&m.winner===m.p2?' winner':!resolved&&p2Has?' has-score':'';
   h += `<div class="slot${p2c}"><span class="name${!m.p2?' tbd':''}">${m.p2||'TBD'}</span>`;
@@ -436,16 +402,13 @@ function renderMatch(m, isGrand, isReset) {
     h += `<div class="slot-entry"><input type="number" step="0.1" id="inp-${m.id}-p2" placeholder="lbs" inputmode="decimal"><button onclick="submitSingle('${m.id}','p2')">GO</button></div>`;
   }
   h += `</div>`;
-
-  // Banner
   if (resolved) {
     h += `<div class="win-banner"><span>${m.winner} WINS</span>`;
     if (canUndo) h += `<span class="undo-match-btn" onclick="undoMatch('${m.id}')">UNDO</span>`;
     else if (hasDownstreamScores(m.id)) h += `<span class="undo-match-btn disabled" title="Can't undo — downstream matches have scores">UNDO</span>`;
     h += `</div>`;
   } else if ((p1Has&&!p2Has)||(p2Has&&!p1Has)) {
-    const waiting = p1Has ? m.p2 : m.p1;
-    h += `<div class="waiting-banner">Waiting on ${waiting}</div>`;
+    h += `<div class="waiting-banner">Waiting on ${p1Has?m.p2:m.p1}</div>`;
   }
   h += `</div>`;
   return h;
@@ -474,24 +437,19 @@ function renderBracket() {
 }
 
 function renderPlayers() {
-  // What-If calculator
   let h = `<div class="whatif-box"><div class="title"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="var(--blue)" stroke-width="1.3"/><text x="7" y="10.5" text-anchor="middle" fill="var(--blue)" font-size="9" font-weight="700" font-family="var(--mono)">?</text></svg> WHAT IF CALCULATOR</div>`;
   h += `<div style="font-size:11px;color:var(--text-dim);margin-bottom:10px">See what your adjusted score would be — doesn't save anything</div>`;
   h += `<div class="whatif-row"><div style="flex:1"><select id="wif-player"><option value="">Pick a person</option>`;
   PLAYERS.forEach(p => { h += `<option value="${p.name}">${p.name}</option>`; });
   h += `</select></div><div><input type="number" step="0.1" id="wif-score" placeholder="lbs" inputmode="decimal"></div></div>`;
   h += `<div id="wif-result" class="whatif-result"></div></div>`;
-
-  // Player cards
   h += `<div class="section-label" style="color:var(--text-muted)"><div class="dot" style="background:var(--blue)"></div>ALL PLAYERS — RANKED BY BEST ADJUSTED</div>`;
   h += `<div style="font-size:11px;color:var(--text-dim);margin-bottom:12px;font-family:var(--mono)">Top baseline: ${getTopBaseline()} lbs (updates as players set new bests)</div>`;
   const sorted = [...PLAYERS].map(p => {
     const best=getBest(p.name), latest=getLatest(p.name), squeezes=state.squeezes[p.name]||[];
-    const effBase = getEffectiveBaseline(p.name);
-    const adj = best!=null ? getPlayerAdjusted(p.name, best) : 0;
+    const effBase=getEffectiveBaseline(p.name), adj=best!=null?getPlayerAdjusted(p.name,best):0;
     return { ...p, best, latest, adj, squeezes, effBase };
-  }).sort((a,b) => b.adj - a.adj);
-
+  }).sort((a,b) => b.adj-a.adj);
   sorted.forEach((p,i) => {
     h += `<div class="player-card"><div style="display:flex;align-items:center;gap:10px"><span class="rank">#${i+1}</span><span class="pname">${p.name}</span></div>`;
     h += `<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">`;
@@ -516,10 +474,11 @@ function renderStandings() {
   const champ = getChampion();
   let h = `<div class="standings-table"><div class="standings-header"><span>#</span><span>Name</span><span>Eff.Base</span><span>Best</span><span>Adj</span><span>Bonus</span><span></span></div>`;
   PLAYERS.forEach((p,i) => {
-    const losses = state.matchLog.filter(l=>l.type==='match'&&(l.p1===p.name||l.p2===p.name)&&l.winner!==p.name).length;
+    const logs = state.matchLog || [];
+    const losses = logs.filter(l=>l.type==='match'&&(l.p1===p.name||l.p2===p.name)&&l.winner!==p.name).length;
     const elim=losses>=2, isChamp=champ===p.name;
     const best=getBest(p.name), effBase=getEffectiveBaseline(p.name);
-    const adj=best!=null?getPlayerAdjusted(p.name, best):'-';
+    const adj=best!=null?getPlayerAdjusted(p.name,best):'-';
     h += `<div class="standings-row${elim?' eliminated':''}${isChamp?' champ':''}">`;
     h += `<span style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">${i+1}</span>`;
     h += `<span style="font-weight:500;color:${isChamp?'var(--accent)':'var(--text)'}">${p.name}</span>`;
@@ -536,18 +495,18 @@ function renderStandings() {
 }
 
 function renderLog() {
-  const entries = state.matchLog.filter(l=>l.type);
+  const entries = (state.matchLog||[]).filter(l=>l.type);
   if (!entries.length) return `<div class="log-empty">No activity yet.</div>`;
   let h = '';
   [...entries].reverse().forEach(log => {
     const d=new Date(log.timestamp);
     const ts=`${d.toLocaleDateString()} ${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
     if (log.type==='squeeze') {
-      const adj=getPlayerAdjusted(log.name, log.value);
+      const adj=getPlayerAdjusted(log.name,log.value);
       h += `<div class="log-solo"><div class="log-meta"><span><span class="tag tag-squeeze">SQUEEZE</span>${log.name} &mdash; ${log.matchId}</span><span>${ts}</span></div>`;
       h += `<div style="font-family:var(--mono);font-size:13px;color:var(--text)">${log.value} lbs <span style="color:var(--text-dim)">&rarr;</span> <span style="color:var(--accent)">${adj} adj</span></div></div>`;
     } else if (log.type==='match') {
-      const a1=getPlayerAdjusted(log.p1, log.p1Score), a2=getPlayerAdjusted(log.p2, log.p2Score);
+      const a1=getPlayerAdjusted(log.p1,log.p1Score), a2=getPlayerAdjusted(log.p2,log.p2Score);
       h += `<div class="log-entry"><div class="log-meta"><span><span class="tag tag-match">MATCH</span>${log.matchId}</span><span>${ts}</span></div>`;
       h += `<div class="log-matchup"><div style="flex:1"><span class="log-player ${log.winner===log.p1?'winner':'loser'}">${log.p1}</span> <span class="log-scores">${log.p1Score} &rarr; ${a1}</span></div>`;
       h += `<span class="log-vs">vs</span>`;
@@ -564,71 +523,50 @@ function renderLog() {
 function renderResetModal() {
   if (!state.showResetModal) return '';
   return `<div class="modal-overlay" onclick="if(event.target===this){state.showResetModal=false;render();}">
-    <div class="modal-box">
-      <h3>Reset tournament</h3>
-      <p>This will erase all scores, match results, and squeeze history. Type <strong>RESET</strong> below to confirm.</p>
-      <input type="text" id="reset-input" placeholder="Type RESET" autocomplete="off" spellcheck="false">
-      <div class="modal-actions">
-        <button class="modal-cancel" onclick="state.showResetModal=false;render()">CANCEL</button>
-        <button class="modal-confirm" id="reset-confirm-btn" disabled onclick="resetTournament()">CONFIRM</button>
-      </div>
-    </div>
-  </div>`;
+    <div class="modal-box"><h3>Reset tournament</h3>
+    <p>This will erase all scores, match results, and squeeze history for everyone. Type <strong>RESET</strong> below to confirm.</p>
+    <input type="text" id="reset-input" placeholder="Type RESET" autocomplete="off" spellcheck="false">
+    <div class="modal-actions">
+    <button class="modal-cancel" onclick="state.showResetModal=false;render()">CANCEL</button>
+    <button class="modal-confirm" id="reset-confirm-btn" disabled onclick="resetTournament()">CONFIRM</button>
+    </div></div></div>`;
 }
 
-function setupResetListener() {
-  const inp = document.getElementById('reset-input');
-  const btn = document.getElementById('reset-confirm-btn');
-  if (!inp || !btn) return;
-  inp.addEventListener('input', () => { btn.disabled = inp.value.trim().toUpperCase() !== 'RESET'; });
-}
+function setupListeners() {
+  const ri = document.getElementById('reset-input'), rb = document.getElementById('reset-confirm-btn');
+  if (ri&&rb) ri.addEventListener('input', () => { rb.disabled = ri.value.trim().toUpperCase()!=='RESET'; });
 
-function setupWhatIfListeners() {
-  const sel = document.getElementById('wif-player');
-  const inp = document.getElementById('wif-score');
-  const res = document.getElementById('wif-result');
-  if (!sel || !inp || !res) return;
-  function update() {
-    const name = sel.value, val = parseFloat(inp.value);
-    const pD = PLAYERS.find(p => p.name === name);
-    if (name && !isNaN(val) && val > 0 && pD) {
-      const effBase = getEffectiveBaseline(name);
-      // If this squeeze would become the new best, the effective baseline shifts
-      const wouldBeNewBest = val > effBase;
-      const futureBase = wouldBeNewBest ? val : effBase;
-      // Recalculate top baseline if this squeeze changes it
-      let futureTop = getTopBaseline();
-      if (val > futureTop) futureTop = val;
-      const futureBonus = Math.round((futureTop - futureBase) * HANDICAP_MULT * 100) / 100;
-      const adj = Math.round(((val / futureBase) * 100 + futureBonus) * 100) / 100;
-      const pctOfBase = Math.round((val / effBase) * 1000) / 10;
-      const best = getBest(name);
-      const bestAdj = best != null ? getPlayerAdjusted(name, best) : null;
-      let comparison = '';
-      if (bestAdj != null) {
-        const diff = Math.round((adj - bestAdj) * 100) / 100;
-        comparison = diff > 0
-          ? `<span style="color:var(--green)">+${diff} vs current best adjusted</span>`
-          : diff < 0
-          ? `<span style="color:var(--red)">${diff} vs current best adjusted</span>`
-          : `<span style="color:var(--text-dim)">Same as current best</span>`;
-      }
-      res.innerHTML = `<div style="margin-bottom:6px"><span style="color:var(--text-muted)">${name} squeezes ${val} lbs</span></div>`;
-      res.innerHTML += `<div style="margin-bottom:4px">Adjusted score: <span class="big">${adj}</span></div>`;
-      res.innerHTML += `<div style="font-size:11px;color:var(--text-dim)">${pctOfBase}% of current baseline (${effBase}) &middot; +${futureBonus} bonus</div>`;
-      if (wouldBeNewBest) res.innerHTML += `<div style="font-size:11px;margin-top:4px;color:var(--yellow)">&#9888; New personal best — baseline would shift from ${effBase} to ${val}</div>`;
-      if (comparison) res.innerHTML += `<div style="font-size:11px;margin-top:4px">${comparison}</div>`;
-      res.style.display = 'block';
-    } else res.style.display = 'none';
+  const ws=document.getElementById('wif-player'), wi=document.getElementById('wif-score'), wr=document.getElementById('wif-result');
+  if (ws&&wi&&wr) {
+    function upd() {
+      const name=ws.value, val=parseFloat(wi.value), pD=PLAYERS.find(p=>p.name===name);
+      if (name&&!isNaN(val)&&val>0&&pD) {
+        const effBase=getEffectiveBaseline(name);
+        const wouldBeNewBest=val>effBase, futureBase=wouldBeNewBest?val:effBase;
+        let futureTop=getTopBaseline(); if(val>futureTop) futureTop=val;
+        const futureBonus=Math.round((futureTop-futureBase)*HANDICAP_MULT*100)/100;
+        const adj=Math.round(((val/futureBase)*100+futureBonus)*100)/100;
+        const pctOfBase=Math.round((val/effBase)*1000)/10;
+        const best=getBest(name), bestAdj=best!=null?getPlayerAdjusted(name,best):null;
+        let cmp='';
+        if(bestAdj!=null){const d=Math.round((adj-bestAdj)*100)/100; cmp=d>0?`<span style="color:var(--green)">+${d} vs current best adjusted</span>`:d<0?`<span style="color:var(--red)">${d} vs current best adjusted</span>`:`<span style="color:var(--text-dim)">Same as current best</span>`;}
+        wr.innerHTML=`<div style="margin-bottom:6px"><span style="color:var(--text-muted)">${name} squeezes ${val} lbs</span></div>`;
+        wr.innerHTML+=`<div style="margin-bottom:4px">Adjusted score: <span class="big">${adj}</span></div>`;
+        wr.innerHTML+=`<div style="font-size:11px;color:var(--text-dim)">${pctOfBase}% of current baseline (${effBase}) &middot; +${futureBonus} bonus</div>`;
+        if(wouldBeNewBest) wr.innerHTML+=`<div style="font-size:11px;margin-top:4px;color:var(--yellow)">&#9888; New personal best — baseline would shift from ${effBase} to ${val}</div>`;
+        if(cmp) wr.innerHTML+=`<div style="font-size:11px;margin-top:4px">${cmp}</div>`;
+        wr.style.display='block';
+      } else wr.style.display='none';
+    }
+    ws.addEventListener('change',upd); wi.addEventListener('input',upd);
   }
-  sel.addEventListener('change', update);
-  inp.addEventListener('input', update);
 }
 
 function render() {
+  if (!state.loaded||!state.bracket) return;
   const champ = getChampion();
   let h = `<div class="header"><div class="header-top"><div>`;
-  h += `<div class="header-sub">HANDEFUL DYNAMOMETER</div><h1>GRIP <span>STRENGTH</span> TOURNAMENT</h1>`;
+  h += `<div class="header-sub"><span class="live-dot"></span>HANDEFUL DYNAMOMETER — LIVE</div><h1>GRIP <span>STRENGTH</span> TOURNAMENT</h1>`;
   h += `<div class="header-info">14 players &middot; Double elimination &middot; Handicap adjusted</div></div>`;
   if (champ) h += `<div class="champ-badge"><div class="label">CHAMPION</div><div class="name">${champ}</div></div>`;
   h += `</div><div class="tabs">`;
@@ -636,18 +574,15 @@ function render() {
     h += `<div class="tab${state.tab===t.k?' active':''}" onclick="state.tab='${t.k}';render()">${t.l}</div>`;
   });
   h += `</div></div><div class="content">`;
-  if (state.tab==="bracket") h += renderBracket();
-  else if (state.tab==="players") h += renderPlayers();
-  else if (state.tab==="standings") h += renderStandings();
-  else h += renderLog();
+  if (state.tab==="bracket") h+=renderBracket();
+  else if (state.tab==="players") h+=renderPlayers();
+  else if (state.tab==="standings") h+=renderStandings();
+  else h+=renderLog();
   h += `</div>`;
   h += renderResetModal();
   document.getElementById('app').innerHTML = h;
-  setTimeout(() => { setupResetListener(); setupWhatIfListeners(); }, 0);
+  setTimeout(setupListeners, 0);
 }
-
-loadState();
-render();
 </script>
 </body>
 </html>
